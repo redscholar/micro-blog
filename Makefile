@@ -5,19 +5,12 @@ generator-ca-root:
 	@openssl genrsa -out cert/ca.key 2048
 	@openssl req -new -x509 -key cert/ca.key -out cert/ca.crt -days 365 -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=micro"
 
-.PHONY: generator-ca-etcd
-generator-ca-etcd:
-	@echo "subjectAltName=DNS:etcd.micro.com,IP:127.0.0.1" > cert/etcd.conf
-	@openssl genrsa -out cert/etcd.key 2048
-	@openssl req -new -key cert/etcd.key -out cert/etcd.csr -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=etcd"
-	@openssl x509 -req -days 365 -sha256 -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -extfile cert/etcd.conf -in cert/etcd.csr -out cert/etcd.crt
-
-.PHONY: generator-ca-transport
-generator-ca-transport:
-	@echo "subjectAltName=DNS:*.server.com,IP:10.3.73.160" > cert/transport.conf
-	@openssl genrsa -out cert/transport.key 2048
-	@openssl req -new -key cert/transport.key -out cert/transport.csr -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=transport"
-	@openssl x509 -req -days 365 -sha256 -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -extfile cert/transport.conf -in cert/transport.csr -out cert/transport.crt
+.PHONY: generator-ca
+generator-ca:
+	@echo "subjectAltName=DNS:$(option).micro.com,IP:127.0.0.1,IP:10.3.73.160,IP:0.0.0.0" > cert/$(option).conf
+	@openssl genrsa -out cert/$(option).key 2048
+	@openssl req -new -key cert/$(option).key -out cert/$(option).csr -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=$(option)"
+	@openssl x509 -req -days 365 -sha256 -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -extfile cert/$(option).conf -in cert/$(option).csr -out cert/$(option).crt
 
 .PHONY: build-tls-etcd
 build-tls-etcd:
@@ -41,3 +34,7 @@ build-tls-etcd:
             --log-outputs stderr \
             --cert-file=/etcd/cert/server.crt \
             --key-file=/etcd/cert/server.key \
+
+.PHONY: build-redis
+build-redis:
+	@docker run -d --name redis -p 6379 redis:7.0.4
