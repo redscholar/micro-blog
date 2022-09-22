@@ -32,36 +32,37 @@ const (
 	service    = "web"
 	version    = "latest"
 	address    = ":37100"
-	authHeader = "Authorization"
+	AuthHeader = "Authorization"
 )
 
-type scheduler struct {
-	stop chan bool
-}
+//
+//type scheduler struct {
+//	stop chan bool
+//}
+//
+//func (s scheduler) Notify() (<-chan runtime.Event, error) {
+//	var a = make(chan runtime.Event)
+//	go func() {
+//		ticker := time.NewTicker(1 * time.Minute)
+//
+//		for {
+//			select {
+//			case <-ticker.C:
+//				a <- runtime.Event{}
+//			case <-s.stop:
+//				return
+//			}
+//		}
+//	}()
+//	return a, nil
+//}
+//
+//func (s scheduler) Close() error {
+//	s.stop <- true
+//	return nil
+//}
 
-func (s scheduler) Notify() (<-chan runtime.Event, error) {
-	var a = make(chan runtime.Event)
-	go func() {
-		ticker := time.NewTicker(1 * time.Minute)
-
-		for {
-			select {
-			case <-ticker.C:
-				a <- runtime.Event{}
-			case <-s.stop:
-				return
-			}
-		}
-	}()
-	return a, nil
-}
-
-func (s scheduler) Close() error {
-	s.stop <- true
-	return nil
-}
-
-func init() {
+func InitService() {
 	initCmd()
 	initConfig()
 	etcdCert, _ := tls.LoadX509KeyPair(etcdCertFile, etcdKeyFile)
@@ -232,10 +233,10 @@ func init() {
 		micro.Runtime(
 			runtime.NewRuntime(
 				runtime.WithSource("blog"),
-				runtime.WithScheduler(&scheduler{}),
+				//runtime.WithScheduler(&scheduler{}),
 				runtime.WithType("service"),
-				runtime.WithImage("web:1.0"),
-				runtime.WithClient(nil),
+				//runtime.WithImage("web:1.0"),
+				//runtime.WithClient(nil),
 			),
 		),
 
@@ -263,7 +264,7 @@ func init() {
 				registry.Addrs(etcdAddr...), // etcd 地址。默认127.0.0.1:2379
 				//registry.Timeout(10*time.Second), // 超时时间
 				registry.Secure(true), // 是否启用tls
-				//registry.TLSConfig(&tls.Config{Certificates: []tls.Certificate{etcdCert}}), // tls设置
+				registry.TLSConfig(&tls.Config{Certificates: []tls.Certificate{etcdCert}}), // tls设置
 			),
 		),
 		micro.Transport(
@@ -272,9 +273,9 @@ func init() {
 				transport.Codec(nil),
 				transport.Timeout(transport.DefaultDialTimeout),
 				transport.Secure(true),
-				//transport.TLSConfig(&tls.Config{Certificates: []tls.Certificate{transportCert}}),
+				transport.TLSConfig(&tls.Config{Certificates: []tls.Certificate{transportCert}}),
 			),
 		),
 	)
-
+	Service.Init()
 }

@@ -1,5 +1,10 @@
 current_dir = $(shell pwd)
 
+.PHONY: generator-pem
+generator-pem:
+	@openssl genrsa -out src/web/config/private_key.pem 2048
+	@openssl rsa -in src/web/config/private_key.pem -pubout -out src/web/config/public_key.pem
+
 .PHONY: generator-ca-root
 generator-ca-root:
 	@openssl genrsa -out cert/ca.key 2048
@@ -37,4 +42,4 @@ build-tls-etcd:
 
 .PHONY: build-redis
 build-redis:
-	@docker run -d --name redis -p 6379 redis:7.0.4
+	@docker run -d --name redis -p 6379:6379 redis:7.0.4

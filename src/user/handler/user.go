@@ -2,64 +2,66 @@ package handler
 
 import (
 	"context"
-	"io"
+	"go-micro.dev/v4/auth"
+	"go-micro.dev/v4/metadata"
+	"strconv"
 	"time"
-
-	log "go-micro.dev/v4/logger"
-
+	"user/micro"
 	pb "user/proto"
 )
 
 type User struct{}
 
-func (e *User) Call(ctx context.Context, req *pb.CallRequest, rsp *pb.CallResponse) error {
-	log.Infof("Received User.Call request: %v", req)
-	rsp.Msg = "Hello " + req.Name
+func (e *User) Info(ctx context.Context, _ *pb.InfoRequest, rsp *pb.InfoResponse) error {
+	md, _ := metadata.FromContext(ctx)
+	token, _ := md.Get(micro.AuthHeader)
+	account, err := micro.Service.Options().Auth.Inspect(token)
+	if err != nil {
+		return err
+	}
+	// store中获取
+	//records, err := micro.Service.Options().Store.Read(account.ID)
+	//if err != nil {
+	//	return err
+	//}
+	//user := new(store.User)
+	//err = json.Unmarshal(records[0].Value, user)
+	//if err != nil {
+	//	return err
+	//}
+	rsp.Id = account.ID
+	rsp.Username = account.ID
 	return nil
 }
 
-func (e *User) ClientStream(ctx context.Context, stream pb.User_ClientStreamStream) error {
-	var count int64
-	for {
-		req, err := stream.Recv()
-		if err == io.EOF {
-			log.Infof("Got %v pings total", count)
-			return stream.SendMsg(&pb.ClientStreamResponse{Count: count})
-		}
-		if err != nil {
-			return err
-		}
-		log.Infof("Got ping %v", req.Stroke)
-		count++
+func (e *User) Login(ctx context.Context, req *pb.LoginRequest, rsp *pb.LoginResponse) error {
+	// store中认证
+	//records, err := micro.Service.Options().Store.Read(req.GetUsername())
+	//if err != nil {
+	//	return err
+	//}
+	//user := new(store.User)
+	//err = json.Unmarshal(records[0].Value, user)
+	//if err != nil {
+	//	return err
+	//}
+	//if user.Password != req.GetPassword() {
+	//	return errors.New("账号密码错误")
+	//}
+	// 单位秒，token超时时间
+	expireTime := micro.Service.Options().Config.Get("auth", "expireTime").Int(0)
+	account, err := micro.Service.Options().Auth.Generate(req.GetUsername(), auth.WithType("user"), // todo 应该存id，等做完注册再做
+		auth.WithMetadata(map[string]string{
+			"createAt": strconv.FormatInt(time.Now().Unix(), 10),
+			"expireAt": strconv.FormatInt(time.Now().Add(time.Second*time.Duration(expireTime)).Unix(), 10),
+		}))
+	if err != nil {
+		return err
 	}
-}
-
-func (e *User) ServerStream(ctx context.Context, req *pb.ServerStreamRequest, stream pb.User_ServerStreamStream) error {
-	log.Infof("Received User.ServerStream request: %v", req)
-	for i := 0; i < int(req.Count); i++ {
-		log.Infof("Sending %d", i)
-		if err := stream.Send(&pb.ServerStreamResponse{
-			Count: int64(i),
-		}); err != nil {
-			return err
-		}
-		time.Sleep(time.Millisecond * 250)
+	token, err := micro.Service.Options().Auth.Token(auth.WithExpiry(time.Second*time.Duration(expireTime)), auth.WithCredentials(account.ID, account.Secret))
+	if err != nil {
+		return err
 	}
+	rsp.Token = token.AccessToken
 	return nil
-}
-
-func (e *User) BidiStream(ctx context.Context, stream pb.User_BidiStreamStream) error {
-	for {
-		req, err := stream.Recv()
-		if err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-		log.Infof("Got ping %v", req.Stroke)
-		if err := stream.Send(&pb.BidiStreamResponse{Stroke: req.Stroke}); err != nil {
-			return err
-		}
-	}
 }

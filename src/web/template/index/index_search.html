@@ -1,0 +1,182 @@
+{{ define "index/index_search.html" }}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title>Blog-主页</title>
+    <link rel="icon" href="/static/imgs/index/title.png" type="image/x-icon"> 
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+	<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        function delete_confirm(url)
+        {
+        var r=confirm("您确定要删除吗?")
+          if(r){window.location.href=url
+          }
+        }
+    </script>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-2 column">
+                        <img style="margin-top: 70px;" alt="" height="60px" width="" src="/static/imgs/index/title1.png" />
+                    </div>
+                    <div class="col-md-6 column">
+                        <form role="form" action="/searchArticles" method="post" class="form-inline">
+                            <div class="form-group">
+
+                                <label style="margin-top: 100px;" for="articleName"></label><input  placeholder="搜索文章!"  style="width: 400px;" type="text" class="form-control" id="articleName" name="articleName" />
+                                <button type="submit" style="width: 60px;margin-left: 20px;" class="btn btn-primary">搜索</button>
+                                <a role="button" style="width: 60px;" href="/index" class="btn btn-default">重置</a>
+                                
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4 column"> 
+                        <a  style="margin-top: 85px;" href="/article/WriteArticle" role="button" class="btn btn-info">写Blog</a>
+                    </div>
+
+                </div>
+                <!-- 消息提醒 -->
+                <div style="margin-top: 10px;" class= "{{ .style }}">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                        <strong>{{ .msg }}</strong>   
+                </div>
+
+                <div class="row clearfix">
+                    <div class="col-md-8 column">
+                        <!-- 文章列表 -->
+                        {{ range .articles }}
+                            <div style="margin-top: 10px;background-image: url('/static/imgs/index/article_background.png');" class="thumbnail">
+                                <div class="caption">
+                                    <h3>
+                                        {{ .BlogTitle }}
+                                    </h3>
+                                    <p>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{ .BlogContentOverview }}......
+                                    </p>
+                                    <p>
+                                        <a class="btn btn-default" href="/article/details?id={{ .ID }}">查看详情</a>
+                                        <a class="btn btn-success"  href="/article/addLikes?id={{ .ID }}&url=/index">点赞</a>
+                                        <!-- <a class="btn btn-info" href="#">评论</a> -->
+                                        <!-- <span class="label label-default "  style="float: right;margin-top: 10px;text-align: justify;background-color:darkgrey;" >发布时间:{{ .ReleaseDate }}<br>作者:{{ .Author }}<br>浏览量:{{ .NumberOfViews }}</span> -->
+                                    </p>
+                                </div>
+                            </div>
+                        {{ end }}
+                        <!-- 分页 -->
+                        <a style="float:right; font-size: small;margin-top: 10px;" role="button" class="btn btn-default" href="/index" >返回首页</a>
+                        {{ $page := add .currentPage -1 }}
+                        {{if lt $page 1}}
+                            <a style="margin-left: 520px; font-size: small;margin-top: 10px;" role="button" class="btn btn-info" href="/searchArticles/page?search={{ .kw }}&pageNumber=1" >上一页</a>
+                        {{ else }}
+                            <a style="margin-left: 520px; font-size: small;margin-right: 10px;margin-top: 10px;" role="button" class="btn btn-info" href="/searchArticles/page?search={{ .kw }}&pageNumber={{add .currentPage -1 }}" >上一页</a>
+                        {{end}}
+                        <a style="float: right; font-size: small;margin-right: 10px;margin-top: 10px;" role="button" class="btn btn-info" href="/searchArticles/page?search={{ .kw }}&pageNumber={{add .currentPage 1 }}" >下一页</a>
+                    </div>
+                    <div class="col-md-4 column">
+                        <h2>
+                            关于我们.
+                        </h2>
+                        <p>
+                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbspGin-Blog采用gin,gorm,bootstrap3,mysql
+                            实现的一个个人博客网站,
+                            所有数据均来自网络或者注册用户发布的文章,
+                            1300202481@qq.com或在下方留言.
+                        </p>
+                        <p>
+                            <a id="modal-207300" href="#modal-container-207300" data-toggle="modal">给我留言</a>
+                        </p>
+                        <span style="margin-top: 40px;font-size: medium;" class="label label-primary">留言板</span>
+                        <table style="margin-top: 10px;" class="table table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        用户
+                                    </th>
+                                    <th>
+                                        留言信息
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>             
+                                {{ range .messages }}
+                                    <tr class="info">
+                                        <td>
+                                            {{ .PostUser  }}
+                                        </td>
+                                        <td>
+                                            {{ .Content }}
+                                            <button style="font-size: xx-small;float: right;" class="btn btn-primary" onclick="delete_confirm('/index/delete/messages?id={{ .ID }}')" > 删除</button>
+                                        </td>
+                                    </tr>
+                                {{ end }}
+                            </tbody>
+                        </table>  
+                    </div>
+                </div>
+                <nav style="height: 20px;" class="navbar navbar-default navbar-fixed-top" role="navigation">
+                    <div style="margin-left: 270px;margin-top: 15px;" class="navbar-header">
+                        <p> <a style="margin-left: 10px;color: black;font-size: larger;" href="/index">Blog首页</a>
+                            <a style="margin-left: 10px;color: black;font-size: larger;" href="/article/list?tag=Python&page=1">文章列表</a>
+                            <a style="margin-left: 15px;color: black;font-size: larger;" href="/my">我的文章</a> 
+                            <a style="margin-left: 15px;color: black;font-size: larger;" href="/index/userinfo">个人中心</a>
+                            <a style="margin-left: 15px;color: black;font-size: larger;" href="/management">管理入口</a>
+                            <img src="/static/imgs/index/user.png" width="20px" height="20px" style="margin-left: 380px;" alt="">
+                            <a style="margin-left: 10px;color: black;font-size: larger;" href="/index/userinfo">{{ .currentUser }}</a> 
+                            <a style="margin-left: 30px; color: black;font-size: larger;" href="/logout">退出登录</a>
+                        </p>
+                    </div>   
+                </nav>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <dl style="margin-top:20px;" >
+                    <div>
+                        <dt>
+                            项目地址:<a href="https://github.com/xiaowang012/gin-blog.git" >点击进入</a>&nbsp邮箱: 1300202481@qq.com
+                        </dt>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <!-- 主页给我留言模态框 -->
+    <div class="modal fade" id="modal-container-207300" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        给我留言
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" action="/index/SendMessageBoard" method="post">
+                       
+                        <div class="form-group">
+                             <label for="username">用户名:</label><input  type="text" value="{{ .currentUser }}" class="form-control" name="username" readonly="readonly" />
+                        </div>
+                        <div class="form-group">
+                            <label for="content">留言信息</label>
+                            <textarea class="form-control" rows="3" name="content"  ></textarea>
+                        </div>
+                        <div class="checkbox">
+                            <label><input name="anonymous" type="checkbox" />是否匿名</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">提交</button>  
+                    </form>
+                </div>
+            </div> 
+        </div>
+    </div> 
+    
+</body>
+</html>
+{{ end }}
+

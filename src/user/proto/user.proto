@@ -2,45 +2,26 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "./proto;user";
+option go_package = "./;user";
 
 service User {
-	rpc Call(CallRequest) returns (CallResponse) {}
-	rpc ClientStream(stream ClientStreamRequest) returns (ClientStreamResponse) {}
-	rpc ServerStream(ServerStreamRequest) returns (stream ServerStreamResponse) {}
-	rpc BidiStream(stream BidiStreamRequest) returns (stream BidiStreamResponse) {}
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc Info(InfoRequest) returns (InfoResponse) {}
 }
 
-message CallRequest {
-	string name = 1;
+message LoginRequest {
+  string username = 1;
+  string password = 2;
 }
 
-message CallResponse {
-	string msg = 1;
+message LoginResponse {
+  string token = 1;
 }
 
-message ClientStreamRequest {
-	int64 stroke = 1;
+message InfoRequest {
 }
 
-message ClientStreamResponse {
-	int64 count = 1;
+message InfoResponse {
+  string Id = 1;
+  string Username = 2;
 }
-
-message ServerStreamRequest {
-	int64 count = 1;
-}
-
-message ServerStreamResponse {
-	int64 count = 1;
-}
-
-message BidiStreamRequest {
-	int64 stroke = 1;
-}
-
-message BidiStreamResponse {
-	int64 stroke = 1;
-}
-
-

@@ -1,0 +1,140 @@
+{{ define "user/userinfo.html" }}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>个人信息</title>
+    <link rel="icon" href="../static/imgs/apple.png" type="image/x-icon"> 
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+	<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+</head>
+<style>
+    p{color: red; line-height: 50px;}
+    /* body{
+        background-image: url(../static/imgs/user_info.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+    } */
+    </style>
+<body>
+    <script type="text/javascript">
+        function delete_confirm(url)
+        {
+        var r=confirm("您确定要删除吗?")
+          if(r){window.location.href=url
+          }
+        }
+        function send_parameter(id,username,nickname,age,birthday,phone,email) {
+            $( '#userid').val(id);
+            $( '#username').val(username);
+            $( '#nickname').val(nickname);
+            $( '#age').val(age);
+            $( '#birthday').val(birthday);
+            $( '#phone').val(phone);
+            $( '#email').val(email);
+        }
+    </script>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-4 column">
+                    </div>
+                    <div class="col-md-4 column">
+                        <div class="page-header">
+                            <h1>
+                                用户个人信息
+                            </h1>
+                        </div>
+                        <!-- 消息提醒 -->
+                        <div style="margin-top: 10px;" class= "{{ .style }}">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                                <strong>{{ .msg }}&nbsp&nbsp</strong>   
+                        </div>
+                        
+                        <div class="media">
+                                <a href="#" class="pull-left"><img width="100px" height="100px" src="{{ .PicturePath }}"  class="img-thumbnail" alt='' /></a>
+                            <div class="media-body">
+                                <h2 style="margin-top:20px ;" class="media-heading">
+                                    姓名:&nbsp;{{ .Nickname }}
+                                </h2>
+                            </div>
+                        </div>    
+                        <div style="margin-top: 10px;" class="panel panel-success">
+                            <div class="panel-footer">
+                                账号: {{ .Username }}
+                            </div>
+                            <div class="panel-footer">
+                                年龄: {{ .Age }}
+                            </div>
+                            <div class="panel-footer">
+                                生日: {{ .Birthday }}
+                            </div>
+                            <div class="panel-footer">
+                                手机: {{ .Phone }}
+                            </div>
+                            <div class="panel-footer">
+                                邮箱: {{ .Email }}
+                            </div>
+                        </div>
+                        <a id="modal-207276" onclick="send_parameter('{{ .ID }}','{{ .Username }}','{{ .Nickname }}','{{ .Age }}','{{ .Birthday }}','{{ .Phone }}','{{ .Email }}')" href="#modal-container-207276" role="button" class="btn btn-default btn-primary"  data-toggle="modal">编辑</a>
+                        <a id="modal-207277" href="/updatePassword/" role="button" class="btn btn-default "  >修改密码</a>
+
+                        <a role="button" href="/index" class="btn btn-primary">返回</a>
+                          
+                    </div>
+                    <div class="col-md-4 column">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 编辑个人信息模态框 -->
+    <div class="modal fade" id="modal-container-207276" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑个人信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" action="/index/userinfo/update" method="post"  enctype = "multipart/form-data" >
+                        <div class="form-group">
+                            <label for="userid">ID</label><input type="number" class="form-control" name="userid" id="userid" readonly="readonly" />
+                        </div>
+                        <div class="form-group">
+                             <label for="username">用户名</label><input type="text" class="form-control" name="username" id="username" readonly="readonly" />
+                        </div>
+                        <div class="form-group">
+                             <label for="nickname">姓名</label><input type="text" class="form-control" name="nickname" id="nickname" />
+                        </div>
+                        <div class="form-group">
+                            <label for="age">年龄</label><input type="number" class="form-control" name="age" id="age" />
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday">生日</label><input type="date" class="form-control" name="birthday" id="birthday" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">手机号码</label><input type="text" class="form-control" name="phone" id="phone" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label><input type="email" class="form-control" name="email" id="email" />
+                        </div>
+                        <div style="margin-top: 15px;" class="form-group">
+                            <label for="picture">请上传头像</label><input role="button"  type="file" name="picture" />
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div> 
+        </div>
+    </div> 
+</body>
+</html>
+{{ end }}
+
