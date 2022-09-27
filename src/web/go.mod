@@ -10,7 +10,6 @@ require (
 	github.com/go-micro/plugins/v4/config/source/url v1.1.0
 	github.com/go-micro/plugins/v4/registry/etcd v1.1.0
 	github.com/go-micro/plugins/v4/store/redis v1.1.0
-	github.com/google/uuid v1.3.0
 	github.com/urfave/cli/v2 v2.3.0
 	go-micro.dev/v4 v4.8.0
 	google.golang.org/protobuf v1.28.1
@@ -46,6 +45,7 @@ require (
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect

@@ -10,12 +10,14 @@ import { MyArticle } from './pages/index/myArticle';
 import { UserCenter } from './pages/index/user';
 import { Manager } from './pages/index/manager';
 import { IndexLayout } from './pages/index';
+import SignUp from './pages/sign/signUp';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes >
         <Route path="/signIn" element={<SignIn />} />
+        <Route path="/signUp" element={<SignUp />} />
         <Route path="/signOut" element={<SignOut />} />
         <Route path="/" element={<IndexLayout />}>
           <Route index element={<Blog />} />

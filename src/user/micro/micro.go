@@ -23,6 +23,7 @@ import (
 	"go-micro.dev/v4/store"
 	"go-micro.dev/v4/transport"
 	"time"
+	"util"
 )
 
 var Service micro.Service
@@ -117,7 +118,7 @@ func InitService() {
 						if err != nil {
 							return handlerFunc(ctx, req, rsp)
 						}
-						return handlerFunc(context.WithValue(ctx, "account", account), req, rsp)
+						return handlerFunc(util.SaveAccount(ctx, account), req, rsp)
 					}
 				}),
 				server.WrapSubscriber(func(subscriberFunc server.SubscriberFunc) server.SubscriberFunc {

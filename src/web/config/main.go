@@ -16,7 +16,8 @@ var privateKey []byte
 func HttpConfig() {
 	c := new(Configuration)
 	c.Auth.WhiteList = []string{
-		"/login",
+		"/signIn",
+		"/signUp",
 	}
 	c.Auth.PublicKey = base64.StdEncoding.EncodeToString(publicKey)
 	c.Auth.PrivateKey = base64.StdEncoding.EncodeToString(privateKey)

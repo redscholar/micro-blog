@@ -8,7 +8,7 @@ init:
 
 .PHONY: proto
 proto:
-	@protoc --proto_path=. --micro_out=./proto --go_out=:./proto proto/user.proto
+	@protoc --proto_path=. --micro_out=./proto --go_out=:./proto proto/*.proto
 
 .PHONY: update
 update:

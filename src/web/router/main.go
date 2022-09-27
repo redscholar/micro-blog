@@ -1,30 +1,45 @@
 package router
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
-	"go-micro.dev/v4/auth"
-	"html/template"
+	"go-micro.dev/v4/debug/trace"
+	"go-micro.dev/v4/metadata"
 	"net/http"
 	"strconv"
 	"time"
+	"util"
 	"web/micro"
 )
 
 func GinRouter() {
 	router := gin.Default()
-	router.SetFuncMap(template.FuncMap{
-		//模板中的两个变量相加，实现分页
-		"add": func(x, y int) int {
-			return x + y
-		},
-		//将返回到前端的字符串转换为html代码，如数据库字段为 <p>xx</p>,转换为前端的p标签
-		"tran": func(code string) template.HTML {
-			return template.HTML(code)
-		},
+	// 跨域
+	router.Use(func(c *gin.Context) {
+		method := c.Request.Method
+		origin := c.Request.Header.Get("Origin")
+		if origin != "" {
+			c.Header("Access-Control-Allow-Origin", "*") // 可将将 * 替换为指定的域名
+			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+			c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+			c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")
+			c.Header("Access-Control-Allow-Credentials", "true")
+		}
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+		}
+		c.Next()
 	})
-
-	router.LoadHTMLGlob("template/**/*")
-	router.StaticFS("static/", http.Dir("./static"))
+	// 链路追踪
+	router.Use(func(c *gin.Context) {
+		newCtx, s := trace.DefaultTracer.Start(context.Background(), "web")
+		s.Type = trace.SpanTypeRequestInbound
+		defer trace.DefaultTracer.Finish(s)
+		md, _ := metadata.FromContext(newCtx)
+		c.Set("clientCtx", newCtx)
+		c.Header("Trace-Id", md["Micro-Trace-Id"])
+	})
+	// token校验
 	router.Use(func(c *gin.Context) {
 		for _, s := range micro.Service.Options().Config.Get("auth", "whiteList").StringSlice(make([]string, 0)) {
 			if c.Request.URL.Path == s {
@@ -33,39 +48,29 @@ func GinRouter() {
 			}
 		}
 		token := c.GetHeader(micro.AuthHeader)
-		if token == "" {
-			token, _ = c.GetQuery("token")
-		}
 		account, err := micro.Service.Options().Auth.Inspect(token)
 		if err != nil {
-			c.Redirect(http.StatusMovedPermanently, "/login")
+			c.JSON(http.StatusForbidden, gin.H{
+				"code": -1,
+				"msg":  err.Error(),
+			})
 			c.Abort()
 		}
 		expireAt, _ := strconv.ParseInt(account.Metadata["expireAt"], 10, 0)
 		if expireAt-time.Now().Unix() < int64(micro.Service.Options().Config.Get("auth", "refreshTime").Int(0)) {
 			// 生成新的token
-			expireTime := micro.Service.Options().Config.Get("auth", "expireTime").Int(0)
-			newAccount, err := micro.Service.Options().Auth.Generate(account.ID, auth.WithType("user"),
-				auth.WithMetadata(map[string]string{
-					"createAt": strconv.FormatInt(time.Now().Unix(), 10),
-					"expireAt": strconv.FormatInt(time.Now().Add(time.Second*time.Duration(expireTime)).Unix(), 10),
-				}))
-			if err != nil {
-				c.Redirect(http.StatusMovedPermanently, "/login")
+			if newToken, err := util.GenToken(micro.Service, ""); err != nil {
+				c.JSON(http.StatusForbidden, gin.H{
+					"code": -1,
+					"msg":  err.Error(),
+				})
 				c.Abort()
+			} else {
+				c.Header(micro.AuthHeader, newToken)
 			}
-			newToken, err := micro.Service.Options().Auth.Token(auth.WithExpiry(time.Second*time.Duration(expireTime)), auth.WithCredentials(newAccount.ID, newAccount.Secret))
-			if err != nil {
-				c.Redirect(http.StatusMovedPermanently, "/login")
-				c.Abort()
-			}
-			token = newToken.AccessToken
+
 		}
 		c.Set(micro.AuthHeader, token)
-		if err != nil {
-			c.Redirect(http.StatusMovedPermanently, "/login")
-			c.Abort()
-		}
 	})
 	router = Route(router)
 	err := router.Run(":5001")

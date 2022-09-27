@@ -2,17 +2,21 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"web/handler"
 )
 
 func Route(r *gin.Engine) *gin.Engine {
+	// 登录
+	r.POST("/signIn", handler.SignInPOST)
+	r.POST("/signUp", handler.SignUpPOST)
 
 	//用户相关接口
 	//注册
 	//r.GET("/register", controller.RegisterGET)
 	//r.POST("/register", controller.RegisterPOST)
 	//登录
-	r.GET("/login", LoginGET)
-	r.POST("/login", LoginPOST)
+	//r.GET("/login", LoginGET)
+	//r.POST("/login", LoginPOST)
 	//退出登录 只能用临时重定向
 	//r.GET("/logout", controller.Logout)
 	////修改密码
@@ -20,7 +24,7 @@ func Route(r *gin.Engine) *gin.Engine {
 	//r.POST("/updatePassword", controller.ChangePasswordPOST)
 	//
 	////Blog首页,首页展示，翻页，留言板
-	r.GET("/index", IndexGET)
+	//r.GET("/index", IndexGET)
 	//r.GET("/index/nextPage", controller.IndexGETNextPage)
 	//r.POST("/index/SendMessageBoard", controller.IndexMessageBoard)
 	//r.GET("/index/delete/messages", controller.IndexMessageDelete)

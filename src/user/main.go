@@ -10,9 +10,8 @@ import (
 func main() {
 	// Create service
 	micro.InitService()
-
 	//Register handler
-	pb.RegisterUserHandler(micro.Service.Server(), new(handler.User))
+	pb.RegisterAuthHandler(micro.Service.Server(), new(handler.Auth))
 	// Run service
 	if err := micro.Service.Run(); err != nil {
 		log.Fatal(err)
