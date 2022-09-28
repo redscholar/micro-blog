@@ -13,5 +13,5 @@ export function postChangePwd(param: { oldPwd: string, newPwd: string }) {
 }
 
 export function  postUserInfo() {
-    return post("/userInfo", {})
+    return post("/info", {})
 }

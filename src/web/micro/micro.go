@@ -33,6 +33,7 @@ const (
 	version    = "latest"
 	address    = ":37100"
 	AuthHeader = "Authorization"
+	ClientCtx  = "clientCtx"
 )
 
 //

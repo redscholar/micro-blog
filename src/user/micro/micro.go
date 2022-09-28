@@ -103,14 +103,6 @@ func InitService() {
 				//server.TLSConfig(&tls.Config{Certificates: []tls.Certificate{transportCert}}),
 				//server.WithRouter(server.DefaultRouter),
 				server.Wait(nil),
-				server.WrapHandler(func(handlerFunc server.HandlerFunc) server.HandlerFunc {
-					return func(ctx context.Context, req server.Request, rsp interface{}) error { // 支持链路追踪
-						newCtx, s := trace.DefaultTracer.Start(ctx, "web")
-						s.Type = trace.SpanTypeRequestInbound
-						defer trace.DefaultTracer.Finish(s)
-						return handlerFunc(newCtx, req, rsp)
-					}
-				}),
 				server.WrapHandler(func(handlerFunc server.HandlerFunc) server.HandlerFunc { // 支持auth认证
 					return func(ctx context.Context, req server.Request, rsp interface{}) error {
 						token := req.Header()[AuthHeader]
@@ -119,6 +111,14 @@ func InitService() {
 							return handlerFunc(ctx, req, rsp)
 						}
 						return handlerFunc(util.SaveAccount(ctx, account), req, rsp)
+					}
+				}),
+				server.WrapHandler(func(handlerFunc server.HandlerFunc) server.HandlerFunc {
+					return func(ctx context.Context, req server.Request, rsp interface{}) error { // 支持链路追踪
+						newCtx, s := trace.DefaultTracer.Start(ctx, "web")
+						s.Type = trace.SpanTypeRequestInbound
+						defer trace.DefaultTracer.Finish(s)
+						return handlerFunc(newCtx, req, rsp)
 					}
 				}),
 				server.WrapSubscriber(func(subscriberFunc server.SubscriberFunc) server.SubscriberFunc {

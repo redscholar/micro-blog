@@ -9,6 +9,8 @@ func Route(r *gin.Engine) *gin.Engine {
 	// 登录
 	r.POST("/signIn", handler.SignInPOST)
 	r.POST("/signUp", handler.SignUpPOST)
+	r.POST("/info", handler.InfoPOST)
+	r.POST("/changePwd", handler.ChangePwdPOST)
 
 	//用户相关接口
 	//注册
