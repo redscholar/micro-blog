@@ -28,11 +28,7 @@ export const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
-        if ([403, 401].includes(response.status)) {
-            removeToken()
-            return
-        }
-        if (response.headers["Authorization"] != undefined && response.headers["Authorization"] != "") {
+        if (response.headers["Authorization"] !== undefined && response.headers["Authorization"] !== "") {
             setToken(response.headers["Authorization"])
         }
         if (response.status === 200) {
@@ -41,7 +37,14 @@ axiosInstance.interceptors.response.use(
     },
 
     async (error: any) => {
-        return Promise.reject(error)
+        if (!error.response) {
+            return Promise.reject(error)
+        }
+        const data = error.response
+        if ([403, 401].includes(data.status)) {
+            removeToken()
+            return Promise.reject(error)
+        }
 
     }
     //   async (error: any) => {
@@ -115,7 +118,7 @@ export const post = (url: string, params: any, customError?: boolean) => {
     return axiosInstance
         .post(url, params)
         .then((res) => {
-            if (res.data.code != 0) {
+            if (res.data.code !== 0) {
                 showMessage(new MessageData(true, "error", "请求失败", res.data.msg))
             }
             return res.data;

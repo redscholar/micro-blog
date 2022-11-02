@@ -1,0 +1,30 @@
+input listArticleRequest{
+    pagination: Pagination
+}
+
+"""
+Defines data required to fetch paginated data
+"""
+input Pagination {
+    """
+    Page number for which data will be fetched
+    """
+    page: Int!
+    """
+    Number of data to be fetched
+    """
+    limit: Int!
+}
+
+type listArticleResponse {
+    total: Int!
+    articles: [article]!
+}
+
+type article {
+    id: Int!
+}
+
+type Query {
+    listArticle(request: listArticleRequest): listArticleResponse!
+}

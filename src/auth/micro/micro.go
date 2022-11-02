@@ -7,7 +7,6 @@ import (
 	brokerGrpc "github.com/go-micro/plugins/v4/broker/grpc"
 	cacheRedis "github.com/go-micro/plugins/v4/cache/redis"
 	registryEtcd "github.com/go-micro/plugins/v4/registry/etcd"
-	"github.com/go-micro/plugins/v4/store/redis"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/auth"
 	"go-micro.dev/v4/broker"
@@ -20,7 +19,6 @@ import (
 	"go-micro.dev/v4/registry"
 	"go-micro.dev/v4/runtime"
 	"go-micro.dev/v4/server"
-	"go-micro.dev/v4/store"
 	"go-micro.dev/v4/transport"
 	"time"
 	"util"
@@ -220,15 +218,15 @@ func InitService() {
 				//cache.WithContext(context.Background()),
 			),
 		),
-		micro.Store(
-			redis.NewStore(
-				store.Nodes(redisAddr...),
-				//store.Database("blog"),
-				store.Table("web"),
-				//store.WithContext(context.Background()),
-				//store.WithClient(nil),
-			),
-		),
+		//micro.Store(
+		//	redis.NewStore(
+		//		store.Nodes(redisAddr...),
+		//		//store.Database("blog"),
+		//		store.Table("web"),
+		//		//store.WithContext(context.Background()),
+		//		//store.WithClient(nil),
+		//	),
+		//),
 		micro.Config(cfg),
 		micro.Runtime(
 			runtime.NewRuntime(

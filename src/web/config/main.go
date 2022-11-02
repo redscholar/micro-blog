@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/base64"
 	"encoding/json"
+	log "go-micro.dev/v4/logger"
 	"net/http"
 )
 
@@ -30,7 +31,9 @@ func HttpConfig() {
 		data, _ := json.Marshal(c)
 		writer.Write(data)
 	})
-	http.ListenAndServe(":8080", handler)
+	if err := http.ListenAndServe(":8080", handler); err != nil {
+		log.Errorf("start config failed, the error is %v", err)
+	}
 }
 
 type Configuration struct {

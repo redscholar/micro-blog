@@ -20,7 +20,7 @@ generator-ca:
 .PHONY: build-tls-etcd
 build-tls-etcd:
 	@docker run -d --name etcd-tls \
-		 -p 2379:2379 \
+		 -p 12379:2379 \
 		 --mount type=bind,source=$(current_dir)/cert/etcd.crt,destination=/etcd/cert/server.crt \
 		 --mount type=bind,source=$(current_dir)/cert/etcd.key,destination=/etcd/cert/server.key \
 		 quay.io/coreos/etcd:v3.5.0 \
@@ -43,3 +43,10 @@ build-tls-etcd:
 .PHONY: build-redis
 build-redis:
 	@docker run -d --name redis -p 6379:6379 redis:7.0.4
+
+.PHONY: build-mongodb
+build-mongodb:
+	@docker run -d --name mongodb -p 27017:27017 \
+ 		-e MONGO_INITDB_ROOT_USERNAME=admin \
+		-e MONGO_INITDB_ROOT_PASSWORD=123456 \
+		mongo:6.0

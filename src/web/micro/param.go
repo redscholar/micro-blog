@@ -63,7 +63,7 @@ var (
 		Name:    "etcd-addr",
 		Usage:   "the address to connect etcd. e.g: 127.0.0.1:2379,127.0.0.2:2379",
 		EnvVars: []string{"ETCD_ADDR"},
-		Value:   "127.0.0.1:2379",
+		Value:   "127.0.0.1:12379",
 	}, &cli.StringFlag{
 		Name:    "redis-addr",
 		Usage:   "the address to connect redis. e.g: redis://127.0.0.1:6379,redis://127.0.0.2:6379",

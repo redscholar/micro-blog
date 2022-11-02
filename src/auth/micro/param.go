@@ -16,6 +16,10 @@ var (
 	brokerCertFile    string
 	brokerKeyFile     string
 
+	MongoUser     string
+	MongoPassword string
+	MongoUrl      string
+
 	etcdAddr  []string
 	redisAddr []string
 
@@ -63,12 +67,27 @@ var (
 		Name:    "etcd-addr",
 		Usage:   "the address to connect etcd. e.g: 127.0.0.1:2379,127.0.0.2:2379",
 		EnvVars: []string{"ETCD_ADDR"},
-		Value:   "127.0.0.1:2379",
+		Value:   "127.0.0.1:12379",
 	}, &cli.StringFlag{
 		Name:    "redis-addr",
 		Usage:   "the address to connect redis. e.g: redis://127.0.0.1:6379,redis://127.0.0.2:6379",
 		EnvVars: []string{"REDIS_ADDR"},
 		Value:   "redis://127.0.0.1:6379",
+	}, &cli.StringFlag{
+		Name:    "mongo-user",
+		Usage:   "the user to access mongo. e.g: admin",
+		EnvVars: []string{"MONGO_USER"},
+		Value:   "admin",
+	}, &cli.StringFlag{
+		Name:    "mongo-password",
+		Usage:   "the password to access mongo. e.g: 1234",
+		EnvVars: []string{"MONGO_PASSWORD"},
+		Value:   "123456",
+	}, &cli.StringFlag{
+		Name:    "mongo-url",
+		Usage:   "the url to connect mongo. e.g: mongodb://mongo-service:27017",
+		EnvVars: []string{"MONGO_URL"},
+		Value:   "mongodb://127.0.0.1:27017",
 	}}
 )
 
@@ -83,6 +102,10 @@ func initParam(c *cli.Context) error {
 	brokerKeyFile = c.String("broker-key-file")
 	etcdAddr = strings.Split(c.String("etcd-addr"), ",")
 	redisAddr = strings.Split(c.String("redis-addr"), ",")
+
+	MongoUser = c.String("mongo-user")
+	MongoPassword = c.String("mongo-password")
+	MongoUrl = c.String("mongo-url")
 	return nil
 }
 

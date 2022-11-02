@@ -1,6 +1,6 @@
-module system
+module article
 
-go 1.18
+go 1.19
 
 require go-micro.dev/v4 v4.8.0
 

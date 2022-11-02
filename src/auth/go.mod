@@ -1,6 +1,6 @@
-module user
+module auth
 
-go 1.18
+go 1.19
 
 require (
 	github.com/go-micro/plugins/v4/registry/etcd v1.1.0

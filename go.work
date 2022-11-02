@@ -1,8 +1,8 @@
 go 1.19
 
 use (
-	./src/system
-	./src/user
+	./src/article
+	./src/auth
 	./src/util
 	./src/web
 )
