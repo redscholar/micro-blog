@@ -27,7 +27,7 @@ func (a Auth) ChangePwd(ctx context.Context, request *pb.AuthChangePwdRequest, _
 
 	// 替换密码
 	user.Password = request.NewPwd
-	err = a.UserStore.UpdateUser(user)
+	err = a.UserStore.UpdateUser(user, "Password")
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("update user to error:%v", err)
 		return err
