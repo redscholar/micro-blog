@@ -1,4 +1,6 @@
 input listArticleRequest{
+    keyword: String!
+    lastId: String!
     pagination: Pagination
 }
 
@@ -17,14 +19,38 @@ input Pagination {
 }
 
 type listArticleResponse {
+    code: Int
+    msg: String
+    data: listArticleResponse_Data!
+}
+
+type listArticleResponse_Data {
     total: Int!
     articles: [article]!
 }
 
 type article {
-    id: Int!
+    id: String!
+    title: String!
+    content: String!
+    image: String!
 }
 
 type Query {
     listArticle(request: listArticleRequest): listArticleResponse!
+}
+
+input createArticleRequest {
+    title: String!
+    content: String!
+    image: String!
+}
+
+type createArticleResponse {
+    code: Int
+    msg: String
+}
+
+type Mutation {
+    createArticle(request: createArticleRequest): createArticleResponse!
 }

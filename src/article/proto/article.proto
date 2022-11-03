@@ -1,46 +1,38 @@
 syntax = "proto3";
 
-package system;
+package article;
 
-option go_package = "./proto;system";
+option go_package = "./proto;article";
 
-service System {
-	rpc Call(CallRequest) returns (CallResponse) {}
-	rpc ClientStream(stream ClientStreamRequest) returns (ClientStreamResponse) {}
-	rpc ServerStream(ServerStreamRequest) returns (stream ServerStreamResponse) {}
-	rpc BidiStream(stream BidiStreamRequest) returns (stream BidiStreamResponse) {}
+service Article {
+	rpc List(ArticleListRequest) returns (ArticleListResponse) {}
+	rpc Create(ArticleCreateRequest) returns (ArticleCreateResponse) {}
 }
 
-message CallRequest {
-	string name = 1;
+message ArticleListRequest {
+	string keyword = 1;
+	string lastId = 2;
+	int64 page = 3;
+	int64 limit = 4;
 }
 
-message CallResponse {
-	string msg = 1;
+message ArticleListResponse {
+	int64 total = 1;
+	repeated Data data = 2;
+
+	message Data {
+		string id = 1;
+		string title = 2;
+		string content = 3;
+		string image = 4;
+	}
 }
 
-message ClientStreamRequest {
-	int64 stroke = 1;
+message ArticleCreateRequest {
+	string title = 1;
+	string content = 2;
+	string image = 3;
 }
 
-message ClientStreamResponse {
-	int64 count = 1;
+message ArticleCreateResponse {
 }
-
-message ServerStreamRequest {
-	int64 count = 1;
-}
-
-message ServerStreamResponse {
-	int64 count = 1;
-}
-
-message BidiStreamRequest {
-	int64 stroke = 1;
-}
-
-message BidiStreamResponse {
-	int64 stroke = 1;
-}
-
-

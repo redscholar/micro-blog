@@ -2,29 +2,22 @@ package main
 
 import (
 	"article/handler"
+	"article/micro"
+	"article/mongo"
 	pb "article/proto"
-	"go-micro.dev/v4"
-
 	log "go-micro.dev/v4/logger"
-)
-
-var (
-	service = "system"
-	version = "latest"
 )
 
 func main() {
 	// Create service
-	srv := micro.NewService(
-		micro.Name(service),
-		micro.Version(version),
-	)
-	srv.Init()
+	micro.InitService()
+	// Connect db
+	mongo.InitMongo()
 
-	// Register handler
-	pb.RegisterSystemHandler(srv.Server(), new(handler.System))
+	//// Register handler
+	pb.RegisterArticleHandler(micro.Service.Server(), &handler.Article{ArticleStore: mongo.NewArticleStore()})
 	// Run service
-	if err := srv.Run(); err != nil {
+	if err := micro.Service.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

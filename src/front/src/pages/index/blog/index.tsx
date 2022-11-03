@@ -1,6 +1,7 @@
 export const Blog = () => {
 	// 查询接口获取数据
 
+
     return (
         <section className="dark:bg-gray-800 dark:text-gray-100">
 	<div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">

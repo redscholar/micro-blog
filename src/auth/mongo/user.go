@@ -28,10 +28,7 @@ type UserStore struct {
 
 func (m UserStore) CreateUser(user User) error {
 	_, err := m.userCollection.InsertOne(m.Context, user)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (m UserStore) GetUser(user User) (*User, error) {

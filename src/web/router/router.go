@@ -17,27 +17,27 @@ func Route(r *gin.Engine) *gin.Engine {
 	r.POST("/changePwd", handler.ChangePwdPOST)
 
 	r.POST("/query", func(c *gin.Context) {
-		graphHandler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}})).ServeHTTP(c.Writer, c.Request)
+		graphHandler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{Context: c}})).ServeHTTP(c.Writer, c.Request)
 	})
 	r.GET("/", func(c *gin.Context) {
 		playground.Handler("GraphQL", "/query").ServeHTTP(c.Writer, c.Request)
 	})
 
 	// 文章
-	r.POST("/article/hot", handler.ArticleHotListPOST)
-	r.POST("/article/list", handler.ArticleListPOST)
-	r.POST("/article", handler.ArticlePOST)
-	r.GET("/article/{id}", handler.ArticleGET)
-	r.PUT("/article/{id}", handler.ArticlePUT)
-	r.DELETE("/article/{id}", handler.ArticleDELETE)
-	r.PUT("/article/{id}/like", handler.ArticleLikePUT)
-	r.PUT("/article/{id}/comment", handler.ArticleCommentPUT)
-
-	// 管理
-	r.POST("/user/list", handler.UserListPOST)
-	r.GET("/user/{id}", handler.UserGET)
-	r.DELETE("/user/{id}", handler.UserDELETE)
-	r.POST("/role/list", handler.RoleListPOST)
+	//r.POST("/article/hot", handler.ArticleHotListPOST)
+	//r.POST("/article/list", handler.ArticleListPOST)
+	//r.POST("/article", handler.ArticlePOST)
+	//r.GET("/article/{id}", handler.ArticleGET)
+	//r.PUT("/article/{id}", handler.ArticlePUT)
+	//r.DELETE("/article/{id}", handler.ArticleDELETE)
+	//r.PUT("/article/{id}/like", handler.ArticleLikePUT)
+	//r.PUT("/article/{id}/comment", handler.ArticleCommentPUT)
+	//
+	//// 管理
+	//r.POST("/user/list", handler.UserListPOST)
+	//r.GET("/user/{id}", handler.UserGET)
+	//r.DELETE("/user/{id}", handler.UserDELETE)
+	//r.POST("/role/list", handler.RoleListPOST)
 
 	//用户相关接口
 	//注册

@@ -5,7 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"web/micro"
-	"web/proto/user"
+	"web/proto/auth"
+)
+
+const (
+	authService = "auth"
 )
 
 func SignInPOST(c *gin.Context) {
@@ -41,8 +45,8 @@ func SignInPOST(c *gin.Context) {
 		return
 	}
 	ctx, _ := c.Get(micro.ClientCtx)
-	loginRsp := &user.AuthSignInResponse{}
-	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest("user", "Auth.SignIn", &user.AuthSignInRequest{Username: username, Password: password}), loginRsp); err != nil {
+	loginRsp := &auth.AuthSignInResponse{}
+	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest(authService, "Auth.SignIn", &auth.AuthSignInRequest{Username: username, Password: password}), loginRsp); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  err.Error(),
@@ -89,8 +93,8 @@ func SignUpPOST(c *gin.Context) {
 		return
 	}
 	ctx, _ := c.Get(micro.ClientCtx)
-	signUpRsp := &user.AuthSignUpResponse{}
-	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest("user", "Auth.SignUp", &user.AuthSignUpRequest{Username: username, Password: password}), signUpRsp); err != nil {
+	signUpRsp := &auth.AuthSignUpResponse{}
+	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest(authService, "Auth.SignUp", &auth.AuthSignUpRequest{Username: username, Password: password}), signUpRsp); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  err.Error(),
@@ -106,8 +110,8 @@ func SignUpPOST(c *gin.Context) {
 
 func InfoPOST(c *gin.Context) {
 	ctx, _ := c.Get(micro.ClientCtx)
-	infoRsp := new(user.AuthInfoResponse)
-	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest("user", "Auth.Info", new(user.AuthInfoRequest)), infoRsp); err != nil {
+	infoRsp := new(auth.AuthInfoResponse)
+	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest(authService, "Auth.Info", new(auth.AuthInfoRequest)), infoRsp); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  err.Error(),
@@ -138,8 +142,8 @@ func ChangePwdPOST(c *gin.Context) {
 		return
 	}
 	ctx, _ := c.Get(micro.ClientCtx)
-	changePwdRsp := &user.AuthChangePwdResponse{}
-	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest("user", "Auth.ChangePwd", &user.AuthChangePwdRequest{OldPwd: cpReq.OldPwd, NewPwd: cpReq.NewPwd}), changePwdRsp); err != nil {
+	changePwdRsp := &auth.AuthChangePwdResponse{}
+	if err := micro.Service.Options().Client.Call(ctx.(context.Context), micro.Service.Options().Client.NewRequest(authService, "Auth.ChangePwd", &auth.AuthChangePwdRequest{OldPwd: cpReq.OldPwd, NewPwd: cpReq.NewPwd}), changePwdRsp); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  err.Error(),

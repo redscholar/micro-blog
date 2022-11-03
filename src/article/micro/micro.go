@@ -27,9 +27,9 @@ import (
 var Service micro.Service
 
 const (
-	service    = "auth"
+	service    = "article"
 	version    = "latest"
-	address    = ":37200"
+	address    = ":37300"
 	AuthHeader = "Authorization"
 )
 
