@@ -4,7 +4,7 @@ import (
 	"article/handler"
 	"article/micro"
 	"article/mongo"
-	pb "article/proto"
+	pb "article/proto/article"
 	log "go-micro.dev/v4/logger"
 )
 

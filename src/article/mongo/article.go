@@ -10,11 +10,17 @@ import (
 )
 
 type Article struct {
-	Id       string    `bson:"_id"`
-	Title    string    `bson:"title"`
-	Content  string    `bson:"content"`
-	Image    string    `bson:"image"`
-	CreateAt time.Time `bson:"create_at"`
+	Id        string        `bson:"_id"`
+	Title     string        `bson:"title"`
+	Content   string        `bson:"content"`
+	Image     string        `bson:"image"`
+	CreatedAt time.Time     `bson:"created_at"`
+	Author    ArticleAuthor `bson:"author"`
+}
+
+type ArticleAuthor struct {
+	Id       string `bson:"_id"`
+	Username string `bson:"username"`
 }
 
 func NewArticleStore() *ArticleStore {

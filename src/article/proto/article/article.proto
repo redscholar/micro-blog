@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package article;
+
+option go_package = "./proto/article;article";
+
+service Article {
+  rpc List(ArticleListRequest) returns (ArticleListResponse) {}
+  rpc Create(ArticleCreateRequest) returns (ArticleCreateResponse) {}
+}
+
+message ArticleListRequest {
+  string keyword = 1;
+  string lastId = 2;
+  int64 page = 3;
+  int64 limit = 4;
+}
+
+message ArticleListResponse {
+  int64 total = 1;
+  repeated Data data = 2;
+
+  message Data {
+    string id = 1;
+    string title = 2;
+    string content = 3;
+    string image = 4;
+    string createdAt = 5;
+    Author author = 6;
+    message Author {
+      string id = 1;
+      string username = 2;
+    }
+  }
+}
+
+message ArticleCreateRequest {
+  string title = 1;
+  string content = 2;
+  string image = 3;
+}
+
+message ArticleCreateResponse {
+}

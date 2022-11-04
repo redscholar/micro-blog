@@ -291,21 +291,21 @@ input Pagination {
 }
 
 type listArticleResponse {
-    code: Int
-    msg: String
-    data: listArticleResponse_Data!
+    code: Int!
+    msg: String!
+    data: listArticleResponse_Data
 }
 
 type listArticleResponse_Data {
     total: Int!
-    articles: [article]!
+    articles: [article]
 }
 
 type article {
     id: String!
-    title: String!
-    content: String!
-    image: String!
+    title: String
+    content: String
+    image: String
 }
 
 type Query {
@@ -319,8 +319,8 @@ input createArticleRequest {
 }
 
 type createArticleResponse {
-    code: Int
-    msg: String
+    code: Int!
+    msg: String!
 }
 
 type Mutation {
@@ -2503,14 +2503,11 @@ func (ec *executionContext) _article_title(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_article_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2547,14 +2544,11 @@ func (ec *executionContext) _article_content(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_article_content(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2591,14 +2585,11 @@ func (ec *executionContext) _article_image(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_article_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2635,11 +2626,14 @@ func (ec *executionContext) _createArticleResponse_code(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_createArticleResponse_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2676,11 +2670,14 @@ func (ec *executionContext) _createArticleResponse_msg(ctx context.Context, fiel
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_createArticleResponse_msg(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2717,11 +2714,14 @@ func (ec *executionContext) _listArticleResponse_code(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_listArticleResponse_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2758,11 +2758,14 @@ func (ec *executionContext) _listArticleResponse_msg(ctx context.Context, field 
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_listArticleResponse_msg(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2799,14 +2802,11 @@ func (ec *executionContext) _listArticleResponse_data(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.ListArticleResponseData)
 	fc.Result = res
-	return ec.marshalNlistArticleResponse_Data2ᚖwebᚋgraphᚋmodelᚐListArticleResponseData(ctx, field.Selections, res)
+	return ec.marshalOlistArticleResponse_Data2ᚖwebᚋgraphᚋmodelᚐListArticleResponseData(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_listArticleResponse_data(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2893,14 +2893,11 @@ func (ec *executionContext) _listArticleResponse_Data_articles(ctx context.Conte
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Article)
 	fc.Result = res
-	return ec.marshalNarticle2ᚕᚖwebᚋgraphᚋmodelᚐArticle(ctx, field.Selections, res)
+	return ec.marshalOarticle2ᚕᚖwebᚋgraphᚋmodelᚐArticle(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_listArticleResponse_Data_articles(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3501,23 +3498,14 @@ func (ec *executionContext) _article(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = ec._article_title(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "content":
 
 			out.Values[i] = ec._article_content(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "image":
 
 			out.Values[i] = ec._article_image(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3543,10 +3531,16 @@ func (ec *executionContext) _createArticleResponse(ctx context.Context, sel ast.
 
 			out.Values[i] = ec._createArticleResponse_code(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "msg":
 
 			out.Values[i] = ec._createArticleResponse_msg(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3572,17 +3566,20 @@ func (ec *executionContext) _listArticleResponse(ctx context.Context, sel ast.Se
 
 			out.Values[i] = ec._listArticleResponse_code(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "msg":
 
 			out.Values[i] = ec._listArticleResponse_msg(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "data":
 
 			out.Values[i] = ec._listArticleResponse_data(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3615,9 +3612,6 @@ func (ec *executionContext) _listArticleResponse_Data(ctx context.Context, sel a
 
 			out.Values[i] = ec._listArticleResponse_Data_articles(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3931,44 +3925,6 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalNarticle2ᚕᚖwebᚋgraphᚋmodelᚐArticle(ctx context.Context, sel ast.SelectionSet, v []*model.Article) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOarticle2ᚖwebᚋgraphᚋmodelᚐArticle(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
 func (ec *executionContext) marshalNcreateArticleResponse2webᚋgraphᚋmodelᚐCreateArticleResponse(ctx context.Context, sel ast.SelectionSet, v model.CreateArticleResponse) graphql.Marshaler {
 	return ec._createArticleResponse(ctx, sel, &v)
 }
@@ -3997,16 +3953,6 @@ func (ec *executionContext) marshalNlistArticleResponse2ᚖwebᚋgraphᚋmodel�
 	return ec._listArticleResponse(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNlistArticleResponse_Data2ᚖwebᚋgraphᚋmodelᚐListArticleResponseData(ctx context.Context, sel ast.SelectionSet, v *model.ListArticleResponseData) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._listArticleResponse_Data(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4030,22 +3976,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalInt(*v)
 	return res
 }
 
@@ -4275,6 +4205,47 @@ func (ec *executionContext) marshalO__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 	return ec.___Type(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOarticle2ᚕᚖwebᚋgraphᚋmodelᚐArticle(ctx context.Context, sel ast.SelectionSet, v []*model.Article) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOarticle2ᚖwebᚋgraphᚋmodelᚐArticle(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalOarticle2ᚖwebᚋgraphᚋmodelᚐArticle(ctx context.Context, sel ast.SelectionSet, v *model.Article) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -4296,6 +4267,13 @@ func (ec *executionContext) unmarshalOlistArticleRequest2ᚖwebᚋgraphᚋmodel�
 	}
 	res, err := ec.unmarshalInputlistArticleRequest(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOlistArticleResponse_Data2ᚖwebᚋgraphᚋmodelᚐListArticleResponseData(ctx context.Context, sel ast.SelectionSet, v *model.ListArticleResponseData) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._listArticleResponse_Data(ctx, sel, v)
 }
 
 // endregion ***************************** type.gotpl *****************************

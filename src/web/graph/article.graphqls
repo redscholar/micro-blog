@@ -19,21 +19,21 @@ input Pagination {
 }
 
 type listArticleResponse {
-    code: Int
-    msg: String
-    data: listArticleResponse_Data!
+    code: Int!
+    msg: String!
+    data: listArticleResponse_Data
 }
 
 type listArticleResponse_Data {
     total: Int!
-    articles: [article]!
+    articles: [article]
 }
 
 type article {
     id: String!
-    title: String!
-    content: String!
-    image: String!
+    title: String
+    content: String
+    image: String
 }
 
 type Query {
@@ -47,8 +47,8 @@ input createArticleRequest {
 }
 
 type createArticleResponse {
-    code: Int
-    msg: String
+    code: Int!
+    msg: String!
 }
 
 type Mutation {

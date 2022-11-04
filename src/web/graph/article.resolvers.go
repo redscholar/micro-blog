@@ -4,7 +4,7 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	pb "article/proto"
+	pb "article/proto/article"
 	"context"
 	"web/graph/generated"
 	"web/graph/model"
@@ -48,9 +48,9 @@ func (r *queryResolver) ListArticle(ctx context.Context, request *model.ListArti
 	for i, datum := range microResp.Data {
 		resp.Articles[i] = &model.Article{
 			ID:      datum.Id,
-			Title:   datum.Title,
-			Content: datum.Content,
-			Image:   datum.Image,
+			Title:   &datum.Title,
+			Content: &datum.Content,
+			Image:   &datum.Image,
 		}
 	}
 	return nil, nil

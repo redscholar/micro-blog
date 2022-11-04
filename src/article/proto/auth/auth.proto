@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./;user";
+
+service Auth {
+  rpc SignIn(AuthSignInRequest) returns (AuthSignInResponse);
+  rpc SignUp(AuthSignUpRequest) returns (AuthSignUpResponse);
+  rpc Info(AuthInfoRequest) returns (AuthInfoResponse);
+  rpc ChangePwd(AuthChangePwdRequest) returns (AuthChangePwdResponse);
+}
+
+message AuthSignInRequest {
+  string username = 1;
+  string password = 2;
+}
+message AuthSignInResponse {
+  string token = 1;
+}
+
+message AuthSignUpRequest {
+  string username = 1;
+  string password = 2;
+}
+message AuthSignUpResponse {
+  string token = 1;
+}
+
+message AuthInfoRequest {
+}
+message AuthInfoResponse {
+  string id = 1;
+  string username = 2;
+}
+
+message AuthChangePwdRequest {
+  string oldPwd = 1;
+  string newPwd = 2;
+}
+message AuthChangePwdResponse {
+}
