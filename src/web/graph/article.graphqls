@@ -34,6 +34,13 @@ type article {
     title: String
     content: String
     image: String
+    createdAt: String
+    author: listArticleResponse_Data_Author
+}
+
+type listArticleResponse_Data_Author {
+    id: String
+    username: String
 }
 
 type Query {

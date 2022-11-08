@@ -2,7 +2,6 @@ package mongo
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -42,21 +41,22 @@ func (a ArticleStore) CreateArticle(article *Article) error {
 
 func (a ArticleStore) PageArticle(page, limit int64, id, keyword string) ([]*Article, int64, error) {
 	skip := (page - 1) * limit
+	print(skip)
 	filer := bson.M{
 		"_id": bson.M{"$gt": id},
-		"$or": bson.M{
-			"title":   bson.M{"$regex": fmt.Sprintf("/%v/", keyword)},
-			"content": bson.M{"$regex": fmt.Sprintf("/%v/", keyword)},
+		"$or": []bson.M{
+			{"title": bson.M{"$regex": keyword}},
+			{"content": bson.M{"$regex": keyword}},
 		},
 	}
 	count, err := a.articleCollection.CountDocuments(a.Context, filer)
 	if err != nil {
 		return nil, 0, err
 	}
-	cur, err := a.articleCollection.Find(a.Context, &options.FindOptions{
+	cur, err := a.articleCollection.Find(a.Context, filer, &options.FindOptions{
 		Limit: &limit,
 		Skip:  &skip,
-		Sort:  "_id",
+		Sort:  bson.M{"_id": 1},
 	})
 	if err != nil {
 		return nil, 0, err

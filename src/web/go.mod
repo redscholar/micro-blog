@@ -14,7 +14,7 @@ require (
 	github.com/go-micro/plugins/v4/store/redis v1.1.0
 	github.com/urfave/cli/v2 v2.8.1
 	github.com/vektah/gqlparser/v2 v2.5.1
-	go-micro.dev/v4 v4.8.0
+	go-micro.dev/v4 v4.9.0
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -84,7 +84,7 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect

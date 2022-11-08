@@ -1,5 +1,7 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/20/solid'
 import {Link, Outlet} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {listArticle} from "../../../api/article";
 
 
 export const MyArticle = () => {
@@ -10,14 +12,41 @@ export const MyArticle = () => {
 }
 
 export const SearchMyArticle = () => {
+    const [articles, setArticles] = useState([])
+    const [page, setPage] = useState([{
+        total: 0,
+        page: 1,
+        limit: 5
+    }])
+    const [searchReq, setSearchReq] = useState({
+        keyword: "bbb",
+        lastId: "",
+        pagination: {
+            page: 1,
+            limit: 5
+        },
+    })
+    const search = () => {
+        listArticle(searchReq).then((res: any) => {
+            setArticles(res.data.articles)
+        })
+    }
+    useEffect(() => {
+        search()
+    }, [])
+
     return (
         <>
             <div className="container mx-auto flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="relative rounded-lg bg-white shadow-md w-full max-w-2xl">
                     <input type="text" name="Search" placeholder="Search..."
-                           className="w-full text-xl py-4 pl-10 focus:outline-none pr-10"/>
+                           className="w-full text-xl py-4 pl-10 focus:outline-none pr-10"
+                           onChange={(e) => setSearchReq(() => {
+                               searchReq.keyword = e.target.value
+                               return searchReq
+                           })}/>
                     <span className="absolute top-4 right-4 h-6 w-6 fill-slate-400">
-                        <button className="h-6 w-6 focus:outline-none focus:ring">
+                        <button className="h-6 w-6 focus:outline-none focus:ring" onClick={search}>
                             <svg className="h-6 w-6"
                                  xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -26,24 +55,23 @@ export const SearchMyArticle = () => {
                         </button>
                     </span>
                 </div>
-                    <Link to="/myArticle/add" className="text-sm relative pl-10 pt-6 text-sky-400 hover:text-blue-500">新增文章&gt;&gt;</Link>
+                <Link to="/myArticle/add"
+                      className="text-sm relative pl-10 pt-6 text-sky-400 hover:text-blue-500">新增文章&gt;&gt;</Link>
             </div>
             <div className="container p-2 mx-auto sm:p-4 dark:text-gray-100">
                 <div className="grid justify-center grid-cols-1 gap-6">
-                    <a rel="noopener noreferrer" href="#" className="hover:bg-slate-50 group hover:no-underline focus:no-underline dark:bg-gray-900">
-                        <div className="p-6 space-y-2">
-                            <h3 className="text-2xl font-semibold group-focus:underline">In usu laoreet repudiare legendos</h3>
-                            <span className="text-xs dark:text-gray-400">January 21, 2021</span>
-                            <p className="truncate">Mei ex aliquid eleifend forensibus, quo ad dicta apeirian neglegentur, ex has tantas percipit perfecto. At per tempor albucius perfecto, ei probatus consulatu patrioque mea, ei vocent delicata indoctum pri.Mei ex aliquid eleifend forensibus, quo ad dicta apeirian neglegentur, ex has tantas percipit perfecto. At per tempor albucius perfecto, ei probatus consulatu patrioque mea, ei vocent delicata indoctum pri.</p>
-                        </div>
-                    </a>
-                    <a rel="noopener noreferrer" href="#" className="hover:bg-slate-50 group hover:no-underline focus:no-underline dark:bg-gray-900">
-                        <div className="p-6 space-y-2">
-                            <h3 className="text-2xl font-semibold group-focus:underline">In usu laoreet repudiare legendos</h3>
-                            <span className="text-xs dark:text-gray-400">January 22, 2021</span>
-                            <p className="truncate">Mei ex aliquid eleifend forensibus, quo ad dicta apeirian neglegentur, ex has tantas percipit perfecto. At per tempor albucius perfecto, ei probatus consulatu patrioque mea, ei vocent delicata indoctum pri.</p>
-                        </div>
-                    </a>
+                    {articles.map((item: any) => {
+                        return (
+                            <a key={item.id} rel="noopener noreferrer" href="#"
+                               className="hover:bg-slate-50 group hover:no-underline focus:no-underline dark:bg-gray-900">
+                                <div className="p-6 space-y-2">
+                                    <h3 className="text-2xl font-semibold group-focus:underline">{item.title}</h3>
+                                    <span className="text-xs dark:text-gray-400">{item.createdAt}</span>
+                                    <p className="truncate">{item.content}</p>
+                                </div>
+                            </a>
+                        )
+                    })}
                 </div>
 
 
@@ -65,18 +93,20 @@ export const SearchMyArticle = () => {
                     <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-gray-700">
-                                Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{' '}
+                                Showing <span className="font-medium">1</span> to <span
+                                className="font-medium">10</span> of{' '}
                                 <span className="font-medium">97</span> results
                             </p>
                         </div>
                         <div>
-                            <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                            <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                                 aria-label="Pagination">
                                 <a
                                     href="#"
                                     className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
                                 >
                                     <span className="sr-only">Previous</span>
-                                    <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                                    <ChevronLeftIcon className="h-5 w-5" aria-hidden="true"/>
                                 </a>
                                 {/* Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" */}
                                 <a
@@ -98,7 +128,8 @@ export const SearchMyArticle = () => {
                                 >
                                     3
                                 </a>
-                                <span className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
+                                <span
+                                    className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
               ...
             </span>
                                 <a
@@ -124,7 +155,7 @@ export const SearchMyArticle = () => {
                                     className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
                                 >
                                     <span className="sr-only">Next</span>
-                                    <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                                    <ChevronRightIcon className="h-5 w-5" aria-hidden="true"/>
                                 </a>
                             </nav>
                         </div>

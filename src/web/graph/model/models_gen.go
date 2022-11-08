@@ -11,10 +11,12 @@ type Pagination struct {
 }
 
 type Article struct {
-	ID      string  `json:"id"`
-	Title   *string `json:"title"`
-	Content *string `json:"content"`
-	Image   *string `json:"image"`
+	ID        string                         `json:"id"`
+	Title     *string                        `json:"title"`
+	Content   *string                        `json:"content"`
+	Image     *string                        `json:"image"`
+	CreatedAt *string                        `json:"createdAt"`
+	Author    *ListArticleResponseDataAuthor `json:"author"`
 }
 
 type CreateArticleRequest struct {
@@ -43,4 +45,9 @@ type ListArticleResponse struct {
 type ListArticleResponseData struct {
 	Total    int        `json:"total"`
 	Articles []*Article `json:"articles"`
+}
+
+type ListArticleResponseDataAuthor struct {
+	ID       *string `json:"id"`
+	Username *string `json:"username"`
 }

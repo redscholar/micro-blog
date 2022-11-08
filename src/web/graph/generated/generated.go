@@ -53,10 +53,12 @@ type ComplexityRoot struct {
 	}
 
 	Article struct {
-		Content func(childComplexity int) int
-		ID      func(childComplexity int) int
-		Image   func(childComplexity int) int
-		Title   func(childComplexity int) int
+		Author    func(childComplexity int) int
+		Content   func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Image     func(childComplexity int) int
+		Title     func(childComplexity int) int
 	}
 
 	CreateArticleResponse struct {
@@ -73,6 +75,11 @@ type ComplexityRoot struct {
 	ListArticleResponse_Data struct {
 		Articles func(childComplexity int) int
 		Total    func(childComplexity int) int
+	}
+
+	ListArticleResponse_Data_Author struct {
+		ID       func(childComplexity int) int
+		Username func(childComplexity int) int
 	}
 }
 
@@ -122,12 +129,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ListArticle(childComplexity, args["request"].(*model.ListArticleRequest)), true
 
+	case "article.author":
+		if e.complexity.Article.Author == nil {
+			break
+		}
+
+		return e.complexity.Article.Author(childComplexity), true
+
 	case "article.content":
 		if e.complexity.Article.Content == nil {
 			break
 		}
 
 		return e.complexity.Article.Content(childComplexity), true
+
+	case "article.createdAt":
+		if e.complexity.Article.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Article.CreatedAt(childComplexity), true
 
 	case "article.id":
 		if e.complexity.Article.ID == nil {
@@ -198,6 +219,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ListArticleResponse_Data.Total(childComplexity), true
+
+	case "listArticleResponse_Data_Author.id":
+		if e.complexity.ListArticleResponse_Data_Author.ID == nil {
+			break
+		}
+
+		return e.complexity.ListArticleResponse_Data_Author.ID(childComplexity), true
+
+	case "listArticleResponse_Data_Author.username":
+		if e.complexity.ListArticleResponse_Data_Author.Username == nil {
+			break
+		}
+
+		return e.complexity.ListArticleResponse_Data_Author.Username(childComplexity), true
 
 	}
 	return 0, false
@@ -306,6 +341,13 @@ type article {
     title: String
     content: String
     image: String
+    createdAt: String
+    author: listArticleResponse_Data_Author
+}
+
+type listArticleResponse_Data_Author {
+    id: String
+    username: String
 }
 
 type Query {
@@ -2605,6 +2647,94 @@ func (ec *executionContext) fieldContext_article_image(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _article_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Article) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_article_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_article_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "article",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _article_author(ctx context.Context, field graphql.CollectedField, obj *model.Article) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_article_author(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Author, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.ListArticleResponseDataAuthor)
+	fc.Result = res
+	return ec.marshalOlistArticleResponse_Data_Author2ᚖwebᚋgraphᚋmodelᚐListArticleResponseDataAuthor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_article_author(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "article",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_listArticleResponse_Data_Author_id(ctx, field)
+			case "username":
+				return ec.fieldContext_listArticleResponse_Data_Author_username(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type listArticleResponse_Data_Author", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _createArticleResponse_code(ctx context.Context, field graphql.CollectedField, obj *model.CreateArticleResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_createArticleResponse_code(ctx, field)
 	if err != nil {
@@ -2916,8 +3046,94 @@ func (ec *executionContext) fieldContext_listArticleResponse_Data_articles(ctx c
 				return ec.fieldContext_article_content(ctx, field)
 			case "image":
 				return ec.fieldContext_article_image(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_article_createdAt(ctx, field)
+			case "author":
+				return ec.fieldContext_article_author(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type article", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _listArticleResponse_Data_Author_id(ctx context.Context, field graphql.CollectedField, obj *model.ListArticleResponseDataAuthor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_listArticleResponse_Data_Author_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_listArticleResponse_Data_Author_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "listArticleResponse_Data_Author",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _listArticleResponse_Data_Author_username(ctx context.Context, field graphql.CollectedField, obj *model.ListArticleResponseDataAuthor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_listArticleResponse_Data_Author_username(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Username, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_listArticleResponse_Data_Author_username(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "listArticleResponse_Data_Author",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3506,6 +3722,14 @@ func (ec *executionContext) _article(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = ec._article_image(ctx, field, obj)
 
+		case "createdAt":
+
+			out.Values[i] = ec._article_createdAt(ctx, field, obj)
+
+		case "author":
+
+			out.Values[i] = ec._article_author(ctx, field, obj)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3611,6 +3835,35 @@ func (ec *executionContext) _listArticleResponse_Data(ctx context.Context, sel a
 		case "articles":
 
 			out.Values[i] = ec._listArticleResponse_Data_articles(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var listArticleResponse_Data_AuthorImplementors = []string{"listArticleResponse_Data_Author"}
+
+func (ec *executionContext) _listArticleResponse_Data_Author(ctx context.Context, sel ast.SelectionSet, obj *model.ListArticleResponseDataAuthor) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, listArticleResponse_Data_AuthorImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("listArticleResponse_Data_Author")
+		case "id":
+
+			out.Values[i] = ec._listArticleResponse_Data_Author_id(ctx, field, obj)
+
+		case "username":
+
+			out.Values[i] = ec._listArticleResponse_Data_Author_username(ctx, field, obj)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -4274,6 +4527,13 @@ func (ec *executionContext) marshalOlistArticleResponse_Data2ᚖwebᚋgraphᚋmo
 		return graphql.Null
 	}
 	return ec._listArticleResponse_Data(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOlistArticleResponse_Data_Author2ᚖwebᚋgraphᚋmodelᚐListArticleResponseDataAuthor(ctx context.Context, sel ast.SelectionSet, v *model.ListArticleResponseDataAuthor) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._listArticleResponse_Data_Author(ctx, sel, v)
 }
 
 // endregion ***************************** type.gotpl *****************************

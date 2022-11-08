@@ -21,10 +21,9 @@ func (a Article) List(ctx context.Context, request *pbarticle.ArticleListRequest
 		util.LoggerHelper(ctx).Errorf("article List error:%v", err)
 		return err
 	}
-	response = &pbarticle.ArticleListResponse{
-		Total: count,
-		Data:  make([]*pbarticle.ArticleListResponse_Data, 0),
-	}
+	response.Total = count
+	response.Data = make([]*pbarticle.ArticleListResponse_Data, len(articles))
+
 	for i, article := range articles {
 		response.Data[i] = &pbarticle.ArticleListResponse_Data{
 			Id:        article.Id,

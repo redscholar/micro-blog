@@ -1,12 +1,32 @@
-import {postChangePwd} from "../../../api/sign";
+import {createArticle} from "../../../api/article";
+import {useState} from "react";
+import {Simulate} from "react-dom/test-utils";
 import {MessageData, showMessage} from "../../component/message";
+import input = Simulate.input;
+import {Link} from "react-router-dom";
 
 export const AddArticle = () => {
+    const [data, setData] = useState({
+        title: "",
+        content: "",
+        image: "",
+    })
+
+    const addArticle = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (data.title === "") {
+            return showMessage(new MessageData(true, "error", "", "标题不能为空"))
+        }
+        if (data.content === "") {
+            return showMessage(new MessageData(true, "error", "", "内容不能为空"))
+        }
+        createArticle(data).then(r => showMessage(new MessageData(true, "success", "", "新增成功")))
+    }
     return (
         <>
             <div className="container mx-auto min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="md:grid md:grid-cols-1 md:gap-6 justify-center">
-                    <form method="POST" onSubmit={createArticle}>
+                    <form method="POST" onSubmit={addArticle}>
                         <div className="shadow sm:overflow-hidden sm:rounded-md">
                             <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                                 <div className="grid grid-cols-3 gap-6">
@@ -22,6 +42,11 @@ export const AddArticle = () => {
                                                 id="title"
                                                 className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 placeholder="请输入标题..."
+                                                onChange={e => {
+                                                    data.title = e.target.value
+                                                    setData(data)
+                                                }
+                                                }
                                             />
                                         </div>
                                     </div>
@@ -39,6 +64,11 @@ export const AddArticle = () => {
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                             placeholder="请输入内容..."
                                             defaultValue={''}
+                                            onChange={e => {
+                                                data.content = e.target.value
+                                                setData(data)
+                                            }
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -85,6 +115,13 @@ export const AddArticle = () => {
                                 >
                                     提交
                                 </button>
+                                <Link
+                                to="/myArticle"
+                                    type="submit"
+                                    className="ml-3 bg-gray-400 inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                >
+                                    返回
+                                </Link>
                             </div>
                         </div>
                     </form>
@@ -92,9 +129,4 @@ export const AddArticle = () => {
             </div>
         </>
     )
-}
-
-const createArticle = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
 }

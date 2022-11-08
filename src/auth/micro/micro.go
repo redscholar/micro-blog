@@ -192,6 +192,7 @@ func InitService() {
 			),
 		),
 		micro.Registry(
+			//registry.DefaultRegistry,
 			registryEtcd.NewRegistry( // 设置etcd注册中心
 				registry.Addrs(etcdAddr...), // etcd 地址。默认127.0.0.1:2379
 				//registry.Timeout(10*time.Second), // 超时时间

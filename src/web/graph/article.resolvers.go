@@ -4,11 +4,11 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	pb "article/proto/article"
 	"context"
 	"web/graph/generated"
 	"web/graph/model"
 	"web/micro"
+	pb "web/proto/article"
 )
 
 // CreateArticle is the resolver for the createArticle field.
@@ -24,7 +24,10 @@ func (r *mutationResolver) CreateArticle(ctx context.Context, request *model.Cre
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return &model.CreateArticleResponse{
+		Code: 0,
+		Msg:  "success",
+	}, nil
 }
 
 // ListArticle is the resolver for the listArticle field.
@@ -43,17 +46,27 @@ func (r *queryResolver) ListArticle(ctx context.Context, request *model.ListArti
 	}
 	resp := &model.ListArticleResponseData{
 		Total:    int(microResp.Total),
-		Articles: make([]*model.Article, 0),
+		Articles: make([]*model.Article, len(microResp.Data)),
 	}
 	for i, datum := range microResp.Data {
 		resp.Articles[i] = &model.Article{
-			ID:      datum.Id,
-			Title:   &datum.Title,
-			Content: &datum.Content,
-			Image:   &datum.Image,
+			ID:        datum.Id,
+			Title:     &datum.Title,
+			Content:   &datum.Content,
+			Image:     &datum.Image,
+			CreatedAt: &datum.CreatedAt,
+			Author: &model.ListArticleResponseDataAuthor{
+				ID:       &datum.Author.Id,
+				Username: &datum.Author.Username,
+			},
 		}
 	}
-	return nil, nil
+
+	return &model.ListArticleResponse{
+		Code: 0,
+		Msg:  "success",
+		Data: resp,
+	}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
