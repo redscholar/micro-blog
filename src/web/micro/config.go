@@ -7,11 +7,9 @@ import (
 	"time"
 )
 
-var cfg, _ = config.NewConfig()
-
 func initConfig() {
 	for {
-		err := cfg.Load(url.NewSource())
+		err := config.DefaultConfig.Load(url.NewSource())
 		//err := cfg.Load(etcd.NewSource(etcd.WithAddress(etcdAddr...)))
 		if err != nil {
 			log.Info("load config error the error is:%v , try again ", err)

@@ -12,13 +12,17 @@ generator-ca-root:
 
 .PHONY: generator-ca
 generator-ca:
+ifneq (cert/ca.key_cert/ca.crt,$(wildcard cert/ca.key)_$(wildcard cert/ca.crt))
+	$(error "ca.key or ca.crt is not exist. please execution 'make generator-ca-root' first")
+endif
 	@echo "subjectAltName=DNS:$(option).micro.com,IP:127.0.0.1,IP:10.3.73.160,IP:0.0.0.0" > cert/$(option).conf
 	@openssl genrsa -out cert/$(option).key 2048
 	@openssl req -new -key cert/$(option).key -out cert/$(option).csr -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=$(option)"
 	@openssl x509 -req -days 365 -sha256 -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -extfile cert/$(option).conf -in cert/$(option).csr -out cert/$(option).crt
 
 .PHONY: build-tls-etcd
-build-tls-etcd:
+build-tls-etcd: option=etcd
+build-tls-etcd: generator-ca
 	@docker run -d --name etcd-tls \
 		 -p 12379:2379 \
 		 --mount type=bind,source=$(current_dir)/cert/etcd.crt,destination=/etcd/cert/server.crt \

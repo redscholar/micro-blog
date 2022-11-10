@@ -14,6 +14,7 @@ import (
 	"go-micro.dev/v4/broker"
 	"go-micro.dev/v4/cache"
 	"go-micro.dev/v4/client"
+	"go-micro.dev/v4/config"
 	"go-micro.dev/v4/debug/profile"
 	"go-micro.dev/v4/debug/profile/http"
 	"go-micro.dev/v4/debug/trace"
@@ -72,8 +73,8 @@ func InitService() {
 	auth := jwt.NewAuth(
 		auth.Addrs(),
 		auth.Namespace("blog"),
-		auth.PublicKey(cfg.Get("auth", "publicKey").String("")),
-		auth.PrivateKey(cfg.Get("auth", "privateKey").String("")),
+		auth.PublicKey(config.DefaultConfig.Get("auth", "publicKey").String("")),
+		auth.PrivateKey(config.DefaultConfig.Get("auth", "privateKey").String("")),
 		//auth.Credentials("root", "123"),
 		//auth.ClientToken(&auth.Token{}),
 	)
@@ -230,7 +231,7 @@ func InitService() {
 				//store.WithClient(nil),
 			),
 		),
-		micro.Config(cfg),
+		//micro.Config(config.DefaultConfig),
 		micro.Runtime(
 			runtime.NewRuntime(
 				runtime.WithSource("blog"),
@@ -260,23 +261,6 @@ func InitService() {
 		//	return nil
 		//}),
 		//micro.HandleSignal(true),
-		micro.Registry(
-			registryEtcd.NewRegistry( // 设置etcd注册中心
-				registry.Addrs(etcdAddr...), // etcd 地址。默认127.0.0.1:2379
-				//registry.Timeout(10*time.Second), // 超时时间
-				registry.Secure(true), // 是否启用tls
-				registry.TLSConfig(&tls.Config{Certificates: []tls.Certificate{etcdCert}}), // tls设置
-			),
-		),
-		micro.Transport(
-			transport.NewHTTPTransport(
-				transport.Addrs(),
-				transport.Codec(nil),
-				transport.Timeout(transport.DefaultDialTimeout),
-				transport.Secure(true),
-				transport.TLSConfig(&tls.Config{Certificates: []tls.Certificate{transportCert}}),
-			),
-		),
 	)
 	Service.Init()
 }
