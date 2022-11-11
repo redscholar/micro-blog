@@ -7,20 +7,20 @@ import (
 	"context"
 	"web/graph/generated"
 	"web/graph/model"
-	"web/micro"
+	"web/option"
 	pb "web/proto/article"
 )
 
 // CreateArticle is the resolver for the createArticle field.
 func (r *mutationResolver) CreateArticle(ctx context.Context, request *model.CreateArticleRequest) (*model.CreateArticleResponse, error) {
-	microReq := micro.Service.Client().NewRequest(articleService, "Article.Create", &pb.ArticleCreateRequest{
+	microReq := r.Service.Client().NewRequest(articleService, "Article.Create", &pb.ArticleCreateRequest{
 		Title:   request.Title,
 		Content: request.Content,
 		Image:   request.Image,
 	})
 	microResp := &pb.ArticleCreateResponse{}
-	clientCtx, _ := r.Context.Get(micro.ClientCtx)
-	err := micro.Service.Client().Call(clientCtx.(context.Context), microReq, microResp)
+	clientCtx, _ := r.Context.Get(option.ClientCtx)
+	err := r.Service.Client().Call(clientCtx.(context.Context), microReq, microResp)
 	if err != nil {
 		return nil, err
 	}
@@ -32,15 +32,15 @@ func (r *mutationResolver) CreateArticle(ctx context.Context, request *model.Cre
 
 // ListArticle is the resolver for the listArticle field.
 func (r *queryResolver) ListArticle(ctx context.Context, request *model.ListArticleRequest) (*model.ListArticleResponse, error) {
-	microReq := micro.Service.Client().NewRequest(articleService, "Article.List", &pb.ArticleListRequest{
+	microReq := r.Service.Client().NewRequest(articleService, "Article.List", &pb.ArticleListRequest{
 		Keyword: request.Keyword,
 		LastId:  request.LastID,
 		Page:    int64(request.Pagination.Page),
 		Limit:   int64(request.Pagination.Limit),
 	})
 	microResp := &pb.ArticleListResponse{}
-	clientCtx, _ := r.Context.Get(micro.ClientCtx)
-	err := micro.Service.Client().Call(clientCtx.(context.Context), microReq, microResp)
+	clientCtx, _ := r.Context.Get(option.ClientCtx)
+	err := r.Service.Client().Call(clientCtx.(context.Context), microReq, microResp)
 	if err != nil {
 		return nil, err
 	}

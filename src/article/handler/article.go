@@ -1,22 +1,30 @@
 package handler
 
 import (
-	"article/micro"
-	"article/mongo"
 	pbarticle "article/proto/article"
 	pbauth "article/proto/auth"
+	"article/store"
 	"context"
 	"github.com/google/uuid"
+	"go-micro.dev/v4"
 	"time"
 	"util"
 )
 
-type Article struct {
-	*mongo.ArticleStore
+func NewArticle(service micro.Service, store store.ArticleStore) *articleHandler {
+	return &articleHandler{
+		service,
+		store,
+	}
 }
 
-func (a Article) List(ctx context.Context, request *pbarticle.ArticleListRequest, response *pbarticle.ArticleListResponse) error {
-	articles, count, err := a.ArticleStore.PageArticle(request.Page, request.Limit, request.LastId, request.Keyword)
+type articleHandler struct {
+	svc micro.Service
+	as  store.ArticleStore
+}
+
+func (a articleHandler) List(ctx context.Context, request *pbarticle.ArticleListRequest, response *pbarticle.ArticleListResponse) error {
+	articles, count, err := a.as.PageArticle(request.Page, request.Limit, request.LastId, request.Keyword)
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("article List error:%v", err)
 		return err
@@ -40,20 +48,20 @@ func (a Article) List(ctx context.Context, request *pbarticle.ArticleListRequest
 	return nil
 }
 
-func (a Article) Create(ctx context.Context, request *pbarticle.ArticleCreateRequest, _ *pbarticle.ArticleCreateResponse) error {
+func (a articleHandler) Create(ctx context.Context, request *pbarticle.ArticleCreateRequest, _ *pbarticle.ArticleCreateResponse) error {
 	infoResp := &pbauth.AuthInfoResponse{}
-	err := micro.Service.Client().Call(ctx, micro.Service.Client().NewRequest("auth", "Auth.Info", &pbauth.AuthInfoRequest{}), infoResp)
+	err := a.svc.Client().Call(ctx, a.svc.Client().NewRequest("auth", "Auth.Info", &pbauth.AuthInfoRequest{}), infoResp)
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("article Create get current user error:%v", err)
 		return err
 	}
-	err = a.ArticleStore.CreateArticle(&mongo.Article{
+	err = a.as.CreateArticle(&store.Article{
 		Id:        uuid.New().String(),
 		Title:     request.Title,
 		Content:   request.Content,
 		Image:     request.Image,
 		CreatedAt: time.Now(),
-		Author: mongo.ArticleAuthor{
+		Author: store.ArticleAuthor{
 			Id:       infoResp.Id,
 			Username: infoResp.Username,
 		},

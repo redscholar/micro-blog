@@ -1,6 +1,9 @@
 package graph
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"go-micro.dev/v4"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -8,4 +11,5 @@ import "github.com/gin-gonic/gin"
 
 type Resolver struct {
 	*gin.Context
+	micro.Service
 }

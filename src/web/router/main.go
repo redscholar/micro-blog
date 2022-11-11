@@ -4,16 +4,17 @@ import (
 	"context"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"go-micro.dev/v4"
 	"go-micro.dev/v4/debug/trace"
 	"go-micro.dev/v4/metadata"
 	"net/http"
 	"strconv"
 	"time"
 	"util"
-	"web/micro"
+	"web/option"
 )
 
-func GinRouter() {
+func GinHttp(svc micro.Service) {
 	router := gin.Default()
 	// 跨域
 	router.Use(cors.New(cors.Config{
@@ -27,19 +28,19 @@ func GinRouter() {
 		s.Type = trace.SpanTypeRequestInbound
 		defer trace.DefaultTracer.Finish(s)
 		md, _ := metadata.FromContext(newCtx)
-		c.Set(micro.ClientCtx, newCtx)
+		c.Set(option.ClientCtx, newCtx)
 		c.Header("Trace-Id", md["Micro-Trace-Id"])
 	})
 	// token校验
 	router.Use(func(c *gin.Context) {
-		for _, s := range micro.Service.Options().Config.Get("auth", "whiteList").StringSlice(make([]string, 0)) {
+		for _, s := range svc.Options().Config.Get("auth", "whiteList").StringSlice(make([]string, 0)) {
 			if c.Request.URL.Path == s {
 				c.Next()
 				return
 			}
 		}
-		token := c.GetHeader(micro.AuthHeader)
-		account, err := micro.Service.Options().Auth.Inspect(token)
+		token := c.GetHeader(option.AuthHeader)
+		account, err := svc.Options().Auth.Inspect(token)
 		if err != nil {
 			c.JSON(http.StatusForbidden, gin.H{
 				"code": -1,
@@ -49,9 +50,9 @@ func GinRouter() {
 			return
 		}
 		expireAt, _ := strconv.ParseInt(account.Metadata["expireAt"], 10, 0)
-		if expireAt-time.Now().Unix() < int64(micro.Service.Options().Config.Get("auth", "refreshTime").Int(0)) {
+		if expireAt-time.Now().Unix() < int64(svc.Options().Config.Get("auth", "refreshTime").Int(0)) {
 			// 生成新的token
-			if newToken, err := util.GenToken(micro.Service, ""); err != nil {
+			if newToken, err := util.GenToken(svc, ""); err != nil {
 				c.JSON(http.StatusForbidden, gin.H{
 					"code": -1,
 					"msg":  err.Error(),
@@ -59,22 +60,23 @@ func GinRouter() {
 				c.Abort()
 				return
 			} else {
-				c.Header(micro.AuthHeader, newToken)
+				c.Header(option.AuthHeader, newToken)
 			}
 
 		}
-		c.Set(micro.AuthHeader, token)
-		if cctx, exist := c.Get(micro.ClientCtx); exist {
-			c.Set(micro.ClientCtx, metadata.NewContext(cctx.(context.Context), map[string]string{
-				micro.AuthHeader: token,
+		c.Set(option.AuthHeader, token)
+		if cctx, exist := c.Get(option.ClientCtx); exist {
+			c.Set(option.ClientCtx, metadata.NewContext(cctx.(context.Context), map[string]string{
+				option.AuthHeader: token,
 			}))
 		} else {
-			c.Set(micro.ClientCtx, metadata.NewContext(context.Background(), map[string]string{
-				micro.AuthHeader: token,
+			c.Set(option.ClientCtx, metadata.NewContext(context.Background(), map[string]string{
+				option.AuthHeader: token,
 			}))
 		}
 	})
-	router = Route(router)
+	router = signRoute(router, svc)
+	router = graphqlRoute(router)
 
 	err := router.Run(":5001")
 	if err != nil {

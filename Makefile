@@ -1,10 +1,5 @@
 current_dir = $(shell pwd)
 
-.PHONY: generator-pem
-generator-pem:
-	@openssl genrsa -out src/web/config/private_key.pem 2048
-	@openssl rsa -in src/web/config/private_key.pem -pubout -out src/web/config/public_key.pem
-
 .PHONY: generator-ca-root
 generator-ca-root:
 	@openssl genrsa -out cert/ca.key 2048
@@ -19,6 +14,14 @@ endif
 	@openssl genrsa -out cert/$(option).key 2048
 	@openssl req -new -key cert/$(option).key -out cert/$(option).csr -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=$(option)"
 	@openssl x509 -req -days 365 -sha256 -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -extfile cert/$(option).conf -in cert/$(option).csr -out cert/$(option).crt
+
+.PHONY: build-tls-transport
+build-tls-transport: option=transport
+build-tls-transport: generator-ca
+
+.PHONY: build-tls-broker
+build-tls-broker: option=broker
+build-tls-broker: generator-ca
 
 .PHONY: build-tls-etcd
 build-tls-etcd: option=etcd

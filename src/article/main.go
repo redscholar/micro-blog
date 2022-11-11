@@ -2,22 +2,19 @@ package main
 
 import (
 	"article/handler"
-	"article/micro"
-	"article/mongo"
+	"article/option"
 	pb "article/proto/article"
 	log "go-micro.dev/v4/logger"
 )
 
 func main() {
 	// Create service
-	micro.InitService()
-	// Connect db
-	mongo.InitMongo()
+	svc := option.InitService()
 
 	//// Register handler
-	pb.RegisterArticleHandler(micro.Service.Server(), &handler.Article{ArticleStore: mongo.NewArticleStore()})
+	pb.RegisterArticleHandler(svc.Server(), handler.WireArticleHandler(svc))
 	// Run service
-	if err := micro.Service.Run(); err != nil {
+	if err := svc.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

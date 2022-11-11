@@ -3,6 +3,7 @@ go 1.19
 use (
 	./src/article
 	./src/auth
+	./src/config
 	./src/util
 	./src/web
 )

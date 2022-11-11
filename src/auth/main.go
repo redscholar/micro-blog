@@ -2,21 +2,19 @@ package main
 
 import (
 	"auth/handler"
-	"auth/micro"
-	"auth/mongo"
+	"auth/option"
 	pb "auth/proto"
 	log "go-micro.dev/v4/logger"
 )
 
 func main() {
 	// Create service
-	micro.InitService()
-	// Connect db
-	mongo.InitMongo()
+	svc := option.InitService()
+
 	//Register handler
-	pb.RegisterAuthHandler(micro.Service.Server(), &handler.Auth{UserStore: mongo.NewUserStore()})
+	pb.RegisterAuthHandler(svc.Server(), handler.WireAuthHandler(svc))
 	// Run service
-	if err := micro.Service.Run(); err != nil {
+	if err := svc.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

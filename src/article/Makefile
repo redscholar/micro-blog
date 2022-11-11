@@ -29,3 +29,8 @@ test:
 .PHONY: docker
 docker:
 	@docker build -t system:latest .
+
+.PHONY: wire
+wire:
+	@go install github.com/google/wire/cmd/wire@latest
+	@cd handler && wire

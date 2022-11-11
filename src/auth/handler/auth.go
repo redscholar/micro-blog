@@ -1,22 +1,28 @@
 package handler
 
 import (
-	"auth/micro"
-	"auth/mongo"
+	"auth/option"
 	pb "auth/proto"
+	"auth/store"
 	"context"
 	"errors"
 	"github.com/google/uuid"
+	"go-micro.dev/v4"
 	"util"
 )
 
-type Auth struct {
-	*mongo.UserStore
+func NewAuthHandler(service micro.Service, userStore store.UserStore) *authHandler {
+	return &authHandler{service, userStore}
 }
 
-func (a Auth) ChangePwd(ctx context.Context, request *pb.AuthChangePwdRequest, _ *pb.AuthChangePwdResponse) error {
+type authHandler struct {
+	svc micro.Service
+	us  store.UserStore
+}
+
+func (a authHandler) ChangePwd(ctx context.Context, request *pb.AuthChangePwdRequest, _ *pb.AuthChangePwdResponse) error {
 	account := util.GetAccount(ctx)
-	user, err := a.UserStore.GetUser(mongo.User{Id: account.ID})
+	user, err := a.us.GetUser(store.User{Id: account.ID})
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("get user records from store error:%v", err)
 		return err
@@ -27,7 +33,7 @@ func (a Auth) ChangePwd(ctx context.Context, request *pb.AuthChangePwdRequest, _
 
 	// 替换密码
 	user.Password = request.NewPwd
-	err = a.UserStore.UpdateUser(user, "Password")
+	err = a.us.UpdateUser(user, "Password")
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("update user to error:%v", err)
 		return err
@@ -35,9 +41,9 @@ func (a Auth) ChangePwd(ctx context.Context, request *pb.AuthChangePwdRequest, _
 	return nil
 }
 
-func (a Auth) SignIn(ctx context.Context, request *pb.AuthSignInRequest, response *pb.AuthSignInResponse) error {
+func (a authHandler) SignIn(ctx context.Context, request *pb.AuthSignInRequest, response *pb.AuthSignInResponse) error {
 	// store中认证
-	user, err := a.UserStore.GetUser(mongo.User{Username: request.Username})
+	user, err := a.us.GetUser(store.User{Username: request.Username})
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("get record from store error:%v", err)
 		return err
@@ -46,22 +52,22 @@ func (a Auth) SignIn(ctx context.Context, request *pb.AuthSignInRequest, respons
 		return errors.New("password is error")
 	}
 	// 单位秒，token超时时间
-	response.Token, err = util.GenToken(micro.Service, user.Id)
+	response.Token, err = util.GenToken(option.Service, user.Id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (a Auth) SignUp(ctx context.Context, request *pb.AuthSignUpRequest, response *pb.AuthSignUpResponse) error {
+func (a authHandler) SignUp(ctx context.Context, request *pb.AuthSignUpRequest, response *pb.AuthSignUpResponse) error {
 	// 检查账号是否重复
-	_, err := a.UserStore.GetUser(mongo.User{Username: request.Username})
+	_, err := a.us.GetUser(store.User{Username: request.Username})
 	if err != nil && err.Error() != "mongo: no documents in result" {
 		util.LoggerHelper(ctx).Errorf("get record from store error:%v", err)
 		return err
 	}
 	userId := uuid.New().String()
-	err = a.UserStore.CreateUser(mongo.User{
+	err = a.us.CreateUser(store.User{
 		Id:       userId,
 		Username: request.Username,
 		Password: request.Password,
@@ -70,16 +76,16 @@ func (a Auth) SignUp(ctx context.Context, request *pb.AuthSignUpRequest, respons
 		util.LoggerHelper(ctx).Errorf("create user  error:%v", err)
 		return err
 	}
-	if response.Token, err = util.GenToken(micro.Service, userId); err != nil {
+	if response.Token, err = util.GenToken(option.Service, userId); err != nil {
 		util.LoggerHelper(ctx).Errorf("generate new token error:%v", err)
 		return err
 	}
 	return nil
 }
 
-func (a Auth) Info(ctx context.Context, _ *pb.AuthInfoRequest, response *pb.AuthInfoResponse) error {
+func (a authHandler) Info(ctx context.Context, _ *pb.AuthInfoRequest, response *pb.AuthInfoResponse) error {
 	account := util.GetAccount(ctx)
-	user, err := a.UserStore.GetUser(mongo.User{Id: account.ID})
+	user, err := a.us.GetUser(store.User{Id: account.ID})
 	if err != nil {
 		util.LoggerHelper(ctx).Errorf("get user records from store error:%v", err)
 		return err

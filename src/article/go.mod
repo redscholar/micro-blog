@@ -9,7 +9,7 @@ require (
 	github.com/go-micro/plugins/v4/config/source/url v1.1.0
 	github.com/go-micro/plugins/v4/registry/etcd v1.1.0
 	github.com/google/uuid v1.3.0
-	github.com/urfave/cli/v2 v2.8.1
+	github.com/google/wire v0.5.0
 	go-micro.dev/v4 v4.9.0
 	go.mongodb.org/mongo-driver v1.10.3
 	google.golang.org/protobuf v1.28.1
@@ -59,6 +59,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
+	github.com/urfave/cli/v2 v2.8.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
@@ -84,10 +85,3 @@ require (
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
-
-// Uncomment if you use etcd
-// This can be removed once etcd becomes go gettable, version 3.4 and 3.5 is not,
-// see https://github.com/etcd-io/etcd/issues/11154 and https://github.com/etcd-io/etcd/issues/11931.
-// replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
-
-replace system => ./
