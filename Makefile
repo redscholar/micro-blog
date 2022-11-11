@@ -4,6 +4,8 @@ current_dir = $(shell pwd)
 generator-ca-root:
 	@openssl genrsa -out cert/ca.key 2048
 	@openssl req -new -x509 -key cert/ca.key -out cert/ca.crt -days 365 -subj "/C=CN/ST=hubei/L=wuhan/O=lbh/OU=demo/CN=micro"
+	@echo "generator self ca success. please trust it in yourself computer. click 'ca.crt' to install"
+	@echo "自签名根证书生成成功，请在你自己的电脑上信任此证书。点击'ca.crt'进行安装"
 
 .PHONY: generator-ca
 generator-ca:
