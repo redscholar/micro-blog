@@ -5,10 +5,10 @@ package graph
 
 import (
 	"context"
-	"web/graph/generated"
-	"web/graph/model"
-	"web/option"
-	pb "web/proto/article"
+	"gateway/graph/generated"
+	"gateway/graph/model"
+	"gateway/option"
+	pb "gateway/proto/article"
 )
 
 // CreateArticle is the resolver for the createArticle field.

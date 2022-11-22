@@ -1,7 +1,8 @@
 package main
 
 import (
-	"web/router"
+	"gateway/option"
+	"gateway/router"
 )
 
 func main() {

@@ -1,12 +1,12 @@
 package router
 
 import (
+	"gateway/graph"
+	"gateway/graph/generated"
 	graphHandler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
 	"go-micro.dev/v4"
-	"web/graph"
-	"web/graph/generated"
 )
 
 func graphqlRoute(r *gin.Engine, svc micro.Service) *gin.Engine {

@@ -7,10 +7,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"gateway/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"web/graph/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"

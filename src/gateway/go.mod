@@ -1,4 +1,4 @@
-module web
+module gateway
 
 go 1.19
 

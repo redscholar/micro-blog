@@ -28,7 +28,7 @@ test:
 
 .PHONY: docker
 docker:
-	@docker build -t web:latest .
+	@docker build -t gateway:latest .
 
 .PHONY: graphql-init
 graphql-init:

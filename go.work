@@ -4,6 +4,6 @@ use (
 	./src/article
 	./src/auth
 	./src/config
+	./src/gateway
 	./src/util
-	./src/web
 )

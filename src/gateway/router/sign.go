@@ -2,12 +2,12 @@ package router
 
 import (
 	"context"
+	"gateway/option"
+	"gateway/proto/auth"
+	pbauth "gateway/proto/auth"
 	"github.com/gin-gonic/gin"
 	"go-micro.dev/v4"
 	"net/http"
-	"web/option"
-	"web/proto/auth"
-	pbauth "web/proto/auth"
 )
 
 const (

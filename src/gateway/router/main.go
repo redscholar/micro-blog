@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"gateway/option"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go-micro.dev/v4"
@@ -11,7 +12,6 @@ import (
 	"strconv"
 	"time"
 	"util"
-	"web/option"
 )
 
 func GinHttp(svc micro.Service) {
@@ -76,7 +76,7 @@ func GinHttp(svc micro.Service) {
 		}
 	})
 	router = signRoute(router, svc)
-	router = graphqlRoute(router)
+	router = graphqlRoute(router, svc)
 
 	err := router.Run(":5001")
 	if err != nil {
