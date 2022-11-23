@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	service    = "web"
+	service    = "gateway"
 	version    = "latest"
 	address    = ":37100"
 	AuthHeader = "Authorization"
