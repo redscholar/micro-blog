@@ -1,5 +1,3 @@
-### typora-root-url: ./image
-
 # go-micro介绍
 
 ## 简介
